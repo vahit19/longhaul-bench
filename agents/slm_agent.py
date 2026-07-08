@@ -111,7 +111,7 @@ def parse_json(text: str):
 
 
 def run_episode(endpoint: str, world: dict, ep: dict, max_steps: int = 6,
-                memory_context: str = "", retriever=None) -> dict:
+                memory_context: str = "", retriever=None, include_trace: bool = False) -> dict:
     tools = Tools(world, ep["machine_id"], ep["alarms"], retriever=retriever)
     user = (
         f"Machine {ep['machine_id']} problem report.\n"
@@ -142,8 +142,11 @@ def run_episode(endpoint: str, world: dict, ep: dict, max_steps: int = 6,
 
         if "diagnosis" in obj:
             d = obj["diagnosis"] or {}
-            return _result(ep, d.get("component", ""), d.get("failure_mode", ""),
-                           t0, tokens, tool_calls, anomalies, "ok")
+            r = _result(ep, d.get("component", ""), d.get("failure_mode", ""),
+                        t0, tokens, tool_calls, anomalies, "ok")
+            if include_trace:
+                r["trace"] = messages + [{"role": "assistant", "content": text}]
+            return r
 
         if "tool" in obj and hasattr(tools, str(obj["tool"])):
             tool_calls += 1
@@ -155,7 +158,10 @@ def run_episode(endpoint: str, world: dict, ep: dict, max_steps: int = 6,
             messages.append({"role": "assistant", "content": text})
             messages.append({"role": "user", "content": "Unknown tool. Use alarm_lookup, manual_search, maintenance_history, or give a diagnosis."})
 
-    return _result(ep, "", "", t0, tokens, tool_calls, anomalies, "no_diagnosis")
+    r = _result(ep, "", "", t0, tokens, tool_calls, anomalies, "no_diagnosis")
+    if include_trace:
+        r["trace"] = messages
+    return r
 
 
 def _result(ep, component, mode, t0, tokens, tool_calls, anomalies, status) -> dict:

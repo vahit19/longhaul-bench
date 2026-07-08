@@ -1,0 +1,26 @@
+{
+  "operator": "gated",
+  "policy": "importance",
+  "budget": 100,
+  "feedback_noise": 0.0,
+  "episodes": 10,
+  "exact_accuracy": 0.7,
+  "memory_hit_rate": 0.5,
+  "final_memory": {
+    "entries": 6,
+    "bytes": 867,
+    "evictions": 0
+  },
+  "peak_system_rss_mb": 3862,
+  "latency_p50_s": 3.62,
+  "probe_curve": [
+    {
+      "after_episode": 5,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 10,
+      "probe_exact": 0.8
+    }
+  ]
+}

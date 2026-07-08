@@ -1,0 +1,26 @@
+{
+  "operator": "reflect",
+  "policy": "compress",
+  "budget": 100,
+  "feedback_noise": 0.0,
+  "episodes": 10,
+  "exact_accuracy": 0.7,
+  "memory_hit_rate": 0.5,
+  "final_memory": {
+    "entries": 7,
+    "bytes": 1018,
+    "evictions": 0
+  },
+  "peak_system_rss_mb": 3864,
+  "latency_p50_s": 3.9399999999999995,
+  "probe_curve": [
+    {
+      "after_episode": 5,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 10,
+      "probe_exact": 0.8
+    }
+  ]
+}

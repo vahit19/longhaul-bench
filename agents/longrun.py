@@ -60,6 +60,10 @@ def main() -> None:
     p.add_argument("--probe-size", type=int, default=5)
     p.add_argument("--seed", type=int, default=7)
     p.add_argument("--endpoint", default="http://127.0.0.1:8080")
+    p.add_argument("--oracle", action="store_true",
+                   help="upper bound: hand the agent the authoritative manual row")
+    p.add_argument("--traces", action="store_true",
+                   help="dump full decision traces to traces.jsonl (knowledge-state autopsies)")
     p.add_argument("--out", type=Path, required=True)
     args = p.parse_args()
 
@@ -72,21 +76,40 @@ def main() -> None:
     rng = random.Random(args.seed)
     args.out.mkdir(parents=True, exist_ok=True)
 
+    manual_rows = {
+        m["machine_id"]: [row for s in m["sections"] for row in s["rows"]]
+        for m in world["manuals"]
+    }
+
+    def oracle_context(ep: dict) -> str:
+        gt = f"{ep['ground_truth']['component']} ({ep['ground_truth']['failure_mode']})"
+        for row in manual_rows.get(ep["machine_id"], []):
+            if gt in row["possible_causes"]:
+                return "Authoritative manual row for this fault:\n" + json.dumps(row)
+        return ""
+
     def run_one(ep: dict, use_memory: bool) -> dict:
         symptoms = symptoms_of(ep, alarm_symptom)
         ctx = ""
-        if use_memory:
+        if args.oracle:
+            ctx = oracle_context(ep)
+        elif use_memory:
             cases = store.recall(ep["machine_id"], symptoms)
             if cases:
                 ctx = store.render(cases)
-        r = run_episode(args.endpoint, world, ep, memory_context=ctx)
+        r = run_episode(args.endpoint, world, ep, memory_context=ctx, include_trace=args.traces)
         r["memory_used"] = bool(ctx)
         return r
 
     results, probe_curve = [], []
+    traces_f = (args.out / "traces.jsonl").open("w", encoding="utf-8") if args.traces else None
     with (args.out / "results.jsonl").open("w", encoding="utf-8") as f:
         for i, ep in enumerate(stream, 1):
             r = run_one(ep, use_memory=True)
+            if traces_f is not None:
+                traces_f.write(json.dumps({"episode_id": r["episode_id"],
+                                           "trace": r.pop("trace", [])}) + "\n")
+                traces_f.flush()
             symptoms = symptoms_of(ep, alarm_symptom)
             apply_operator(args.operator, store, ep["machine_id"], symptoms,
                            ep["ground_truth"], rng, args.feedback_noise)

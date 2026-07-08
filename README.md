@@ -64,6 +64,23 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 
 **Early observations.** (a) The quantized 3B agent *underperforms* the domain-heuristic floor by 21 points — which sharpens the benchmark's central question: can experience accumulation (improvement operators) close this gap without corrupting the knowledge base? (b) ~6.3 s/episode on laptop CPU confirms edge feasibility for non-interactive diagnostic workloads. (c) The apparent upward trend in the curve is episode-mix variation (the agent is frozen); quantifying such variation is exactly why the full protocol uses 5 seeds and frozen probe sets.
 
+### M3 smoke matrix (10 episodes/config — directional only, full matrix in M4)
+
+| run | exact acc. | memory hit | p50 latency | note |
+|---|---|---|---|---|
+| frozen (control) | 60% | — | 4.63 s | no learning |
+| append / fifo | 70% | 50% | 3.71 s | |
+| reflect / compress | 70% | 50% | 3.94 s | 7 rules, 1 KB |
+| gated / importance | 70% | 50% | 3.62 s | |
+| **oracle** (authoritative row given) | **70%** | 100% | 3.71 s | ceiling ≈ model reasoning, not retrieval |
+| reflect + 40% corrupted feedback | 70% | 50% | 4.11 s | corruption invisible at 10 eps — needs horizon |
+
+Directional signals: operators lift accuracy +10 pts over frozen AND cut latency ~20% (past cases → fewer tool calls). Most interesting: the **manual-oracle only reaches 70%** — on this world, retrieval is not the bottleneck; 3B-model reasoning is.
+
+### Model-family robustness (preliminary)
+
+Same protocol, same episodes: **Qwen2.5-3B 65-70% exact / 6.3 s** vs **Phi-3.5-mini 0% exact / 69.8 s, 60% no-diagnosis** — Phi keeps calling tools without committing to a diagnosis. Pending template/prompt-adaptation investigation before drawing conclusions; if it persists, cross-family protocol compliance is itself a benchmark dimension.
+
 ## Stack status (honest inventory)
 
 | Component | Status | Where |
