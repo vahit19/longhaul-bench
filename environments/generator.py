@@ -272,7 +272,8 @@ def _fill_log(template: str, rng: random.Random) -> str:
     return template.format(**values)
 
 
-def build_episode(rng: random.Random, i: int, machines: list[Machine], alarm_table: list[dict]) -> Episode:
+def build_episode(rng: random.Random, i: int, machines: list[Machine], alarm_table: list[dict],
+                  log_dropout: float = 0.3) -> Episode:
     m = rng.choice(machines)
     component = rng.choice([c for c in m.components if FAILURE_MODES.get(c)])
     mode_name = rng.choice(list(FAILURE_MODES[component]))
@@ -287,11 +288,18 @@ def build_episode(rng: random.Random, i: int, machines: list[Machine], alarm_tab
             alarms.append(rng.choice(others))
     rng.shuffle(alarms)
 
+    # difficulty knob: with probability `log_dropout` the detailed log is
+    # unavailable and the agent must reason from ambiguous symptoms alone
+    if rng.random() < log_dropout:
+        log_excerpt = [f"[{m.machine_id}] no detailed log available for this time window"]
+    else:
+        log_excerpt = [f"[{m.machine_id}] " + _fill_log(mode["log"], rng)]
+
     return Episode(
         episode_id=f"E{i+1:05d}",
         machine_id=m.machine_id,
         alarms=[{"code": a["code"], "message": a["message"]} for a in alarms],
-        log_excerpt=[f"[{m.machine_id}] " + _fill_log(mode["log"], rng)],
+        log_excerpt=log_excerpt,
         operator_note=rng.choice([
             "Machine behaving oddly since start of shift.",
             "Operator requests inspection before next batch.",
@@ -315,6 +323,8 @@ def main() -> None:
     p.add_argument("--machines", type=int, default=5)
     p.add_argument("--episodes", type=int, default=50)
     p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--log-dropout", type=float, default=0.3,
+                   help="probability that an episode has no detailed log (difficulty knob)")
     p.add_argument("--out", type=Path, default=Path("runs/demo"))
     args = p.parse_args()
 
@@ -328,7 +338,7 @@ def main() -> None:
         "manuals": [build_manual(m) for m in machines],
         "maintenance_history": [h for m in machines for h in build_maintenance_history(rng, m)],
     }
-    episodes = [build_episode(rng, i, machines, alarm_table) for i in range(args.episodes)]
+    episodes = [build_episode(rng, i, machines, alarm_table, args.log_dropout) for i in range(args.episodes)]
 
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "world.json").write_text(json.dumps(world, indent=2), encoding="utf-8")
