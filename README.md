@@ -64,6 +64,20 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 
 **Early observations.** (a) The quantized 3B agent *underperforms* the domain-heuristic floor by 21 points — which sharpens the benchmark's central question: can experience accumulation (improvement operators) close this gap without corrupting the knowledge base? (b) ~6.3 s/episode on laptop CPU confirms edge feasibility for non-interactive diagnostic workloads. (c) The apparent upward trend in the curve is episode-mix variation (the agent is frozen); quantifying such variation is exactly why the full protocol uses 5 seeds and frozen probe sets.
 
+## Stack status (honest inventory)
+
+| Component | Status | Where |
+|---|---|---|
+| Tool-calling agent loop | ✅ implemented | `agents/slm_agent.py` — JSON action protocol, mean 2.05 tool calls/ep measured |
+| Quantized SLM runtime (llama.cpp) | ✅ implemented | M2 smoke run, results above |
+| Agentic retrieval | 🟡 keyword-based | `manual_search` tool; embedding retrieval → M2-b |
+| Vector DB (Qdrant) + embedding RAG | 🔜 M2-b | planned |
+| Inspect AI harness port | 🔜 M2-b | planned (custom harness today) |
+| Improvement operators + memory budget | 🔜 M3 | planned |
+| LangGraph comparison arm | 🔜 M3 | planned |
+| DeepEval/Ragas RAG metrics | 🔜 analysis phase | planned |
+| Jetson / Qualcomm AI Hub (GenieX, llama.cpp plugin) | 🔜 M5 | planned |
+
 ## Roadmap
 
 - [ ] v0.1 — environment generator + frozen-agent baseline, 1000-episode run on CPU
