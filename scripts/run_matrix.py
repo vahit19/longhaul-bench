@@ -39,6 +39,7 @@ def main() -> None:
     p.add_argument("--config", type=Path, help="JSON list of run configs (default: built-in smoke matrix)")
     p.add_argument("--name", required=True)
     p.add_argument("--limit", type=int, default=10)
+    p.add_argument("--probe-every", type=int, default=0, help="0 = limit//2")
     p.add_argument("--seed", type=int, default=7)
     p.add_argument("--world", default="runs/v01/world.json")
     p.add_argument("--episodes", default="runs/v01/episodes.jsonl")
@@ -58,7 +59,7 @@ def main() -> None:
                "--budget", str(cfg.get("budget", 100)),
                "--feedback-noise", str(cfg.get("feedback_noise", 0.0)),
                "--limit", str(args.limit), "--seed", str(args.seed),
-               "--probe-every", str(max(args.limit // 2, 1)),
+               "--probe-every", str(args.probe_every or max(args.limit // 2, 1)),
                "--traces", "--out", str(out)]
         if cfg.get("oracle"):
             cmd.append("--oracle")
