@@ -51,6 +51,19 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 - **Execution in a resource-capped Linux container** (Docker, e.g. `--memory=8g --cpus=4`): enforces the constrained-device budget identically on any host and makes runs reproducible for the report
 - Hardware targets: x86 CPU (8GB RAM budget) → NVIDIA Jetson Orin → Snapdragon-class devices via Qualcomm AI Hub (remote real-device profiling)
 
+## First results — M2 smoke run (100 episodes, standard tier, CPU)
+
+| Agent | Component acc. | Exact acc. | Latency p50 / p95 | Tokens/ep | Anomaly rate |
+|---|---|---|---|---|---|
+| Heuristic floor (LLM-free)¹ | — | **86.3%** | <0.01 s | 0 | 0% |
+| Qwen2.5-3B Q4_K_M, frozen agent² | 73% | **65%** | 6.3 s / 7.7 s | 1502 | 0% |
+
+¹ 1000 episodes. ² 100 episodes, tool-loop agent (mean 2.05 tool calls/ep), llama.cpp on a 14-core laptop CPU, no learning.
+
+![Sliding-window exact accuracy](runs/m2_smoke/figures/accuracy_curve.png)
+
+**Early observations.** (a) The quantized 3B agent *underperforms* the domain-heuristic floor by 21 points — which sharpens the benchmark's central question: can experience accumulation (improvement operators) close this gap without corrupting the knowledge base? (b) ~6.3 s/episode on laptop CPU confirms edge feasibility for non-interactive diagnostic workloads. (c) The apparent upward trend in the curve is episode-mix variation (the agent is frozen); quantifying such variation is exactly why the full protocol uses 5 seeds and frozen probe sets.
+
 ## Roadmap
 
 - [ ] v0.1 — environment generator + frozen-agent baseline, 1000-episode run on CPU
