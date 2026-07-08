@@ -56,6 +56,16 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 - [ ] v0.3 — Jetson + Qualcomm AI Hub measurements, quantization ablation (4-bit vs 8-bit)
 - [ ] Report — arXiv technical report + blog series
 
+## Quickstart
+
+Generate a reproducible demo world — pure Python 3.10+, no dependencies:
+
+```bash
+python environments/generator.py --machines 5 --episodes 50 --seed 42 --out runs/demo
+```
+
+Outputs `world.json` (machines, alarm-code table, manual excerpts for RAG, maintenance history) and `episodes.jsonl` (diagnostic episodes with hidden ground-truth root cause). Same seed → byte-identical world. A pre-generated sample lives in `runs/demo/`.
+
 ## Repository layout
 
 ```
