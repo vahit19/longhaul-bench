@@ -1,0 +1,699 @@
+{
+  "seed": 42,
+  "machines": [
+    {
+      "machine_id": "M01",
+      "machine_type": "hydraulic_pump",
+      "components": [
+        "electric_motor",
+        "bearing",
+        "hydraulic_valve",
+        "pressure_sensor",
+        "filter"
+      ],
+      "installed_year": 2011
+    },
+    {
+      "machine_id": "M02",
+      "machine_type": "air_compressor",
+      "components": [
+        "electric_motor",
+        "bearing",
+        "belt",
+        "temperature_sensor",
+        "filter"
+      ],
+      "installed_year": 2008
+    },
+    {
+      "machine_id": "M03",
+      "machine_type": "conveyor",
+      "components": [
+        "electric_motor",
+        "gearbox",
+        "belt",
+        "speed_sensor"
+      ],
+      "installed_year": 2016
+    },
+    {
+      "machine_id": "M04",
+      "machine_type": "cnc_mill",
+      "components": [
+        "spindle",
+        "bearing",
+        "coolant_pump",
+        "temperature_sensor"
+      ],
+      "installed_year": 2015
+    },
+    {
+      "machine_id": "M05",
+      "machine_type": "packaging_robot",
+      "components": [
+        "servo_motor",
+        "gearbox",
+        "proximity_sensor",
+        "pneumatic_valve"
+      ],
+      "installed_year": 2015
+    }
+  ],
+  "alarm_table": [
+    {
+      "code": "M01-A100",
+      "machine_id": "M01",
+      "symptom": "flow_low",
+      "message": "Flow rate below nominal"
+    },
+    {
+      "code": "M01-A101",
+      "machine_id": "M01",
+      "symptom": "noise",
+      "message": "Abnormal noise reported by operator"
+    },
+    {
+      "code": "M01-A102",
+      "machine_id": "M01",
+      "symptom": "overcurrent",
+      "message": "Motor overcurrent protection triggered"
+    },
+    {
+      "code": "M01-A103",
+      "machine_id": "M01",
+      "symptom": "pressure_drop",
+      "message": "Supply pressure below nominal"
+    },
+    {
+      "code": "M01-A104",
+      "machine_id": "M01",
+      "symptom": "pressure_oscillation",
+      "message": "Hydraulic pressure unstable"
+    },
+    {
+      "code": "M01-A105",
+      "machine_id": "M01",
+      "symptom": "reading_implausible",
+      "message": "Sensor plausibility check failed"
+    },
+    {
+      "code": "M01-A106",
+      "machine_id": "M01",
+      "symptom": "temperature_high",
+      "message": "Temperature above warning threshold"
+    },
+    {
+      "code": "M01-A107",
+      "machine_id": "M01",
+      "symptom": "vibration_high",
+      "message": "Vibration level above ISO 10816 zone B"
+    },
+    {
+      "code": "M02-A108",
+      "machine_id": "M02",
+      "symptom": "flow_low",
+      "message": "Flow rate below nominal"
+    },
+    {
+      "code": "M02-A109",
+      "machine_id": "M02",
+      "symptom": "noise",
+      "message": "Abnormal noise reported by operator"
+    },
+    {
+      "code": "M02-A110",
+      "machine_id": "M02",
+      "symptom": "overcurrent",
+      "message": "Motor overcurrent protection triggered"
+    },
+    {
+      "code": "M02-A111",
+      "machine_id": "M02",
+      "symptom": "pressure_drop",
+      "message": "Supply pressure below nominal"
+    },
+    {
+      "code": "M02-A112",
+      "machine_id": "M02",
+      "symptom": "reading_implausible",
+      "message": "Sensor plausibility check failed"
+    },
+    {
+      "code": "M02-A113",
+      "machine_id": "M02",
+      "symptom": "speed_unstable",
+      "message": "Output speed unstable"
+    },
+    {
+      "code": "M02-A114",
+      "machine_id": "M02",
+      "symptom": "temperature_high",
+      "message": "Temperature above warning threshold"
+    },
+    {
+      "code": "M02-A115",
+      "machine_id": "M02",
+      "symptom": "vibration_high",
+      "message": "Vibration level above ISO 10816 zone B"
+    },
+    {
+      "code": "M03-A116",
+      "machine_id": "M03",
+      "symptom": "noise",
+      "message": "Abnormal noise reported by operator"
+    },
+    {
+      "code": "M03-A117",
+      "machine_id": "M03",
+      "symptom": "overcurrent",
+      "message": "Motor overcurrent protection triggered"
+    },
+    {
+      "code": "M03-A118",
+      "machine_id": "M03",
+      "symptom": "signal_dropout",
+      "message": "Sensor signal intermittent"
+    },
+    {
+      "code": "M03-A119",
+      "machine_id": "M03",
+      "symptom": "speed_unstable",
+      "message": "Output speed unstable"
+    },
+    {
+      "code": "M03-A120",
+      "machine_id": "M03",
+      "symptom": "temperature_high",
+      "message": "Temperature above warning threshold"
+    },
+    {
+      "code": "M03-A121",
+      "machine_id": "M03",
+      "symptom": "vibration_high",
+      "message": "Vibration level above ISO 10816 zone B"
+    },
+    {
+      "code": "M04-A122",
+      "machine_id": "M04",
+      "symptom": "flow_low",
+      "message": "Flow rate below nominal"
+    },
+    {
+      "code": "M04-A123",
+      "machine_id": "M04",
+      "symptom": "noise",
+      "message": "Abnormal noise reported by operator"
+    },
+    {
+      "code": "M04-A124",
+      "machine_id": "M04",
+      "symptom": "reading_implausible",
+      "message": "Sensor plausibility check failed"
+    },
+    {
+      "code": "M04-A125",
+      "machine_id": "M04",
+      "symptom": "surface_finish_poor",
+      "message": "Quality check: surface finish out of spec"
+    },
+    {
+      "code": "M04-A126",
+      "machine_id": "M04",
+      "symptom": "temperature_high",
+      "message": "Temperature above warning threshold"
+    },
+    {
+      "code": "M04-A127",
+      "machine_id": "M04",
+      "symptom": "vibration_high",
+      "message": "Vibration level above ISO 10816 zone B"
+    },
+    {
+      "code": "M05-A128",
+      "machine_id": "M05",
+      "symptom": "cycle_slow",
+      "message": "Cycle time above nominal"
+    },
+    {
+      "code": "M05-A129",
+      "machine_id": "M05",
+      "symptom": "missed_detection",
+      "message": "Part detection failure"
+    },
+    {
+      "code": "M05-A130",
+      "machine_id": "M05",
+      "symptom": "noise",
+      "message": "Abnormal noise reported by operator"
+    },
+    {
+      "code": "M05-A131",
+      "machine_id": "M05",
+      "symptom": "position_error",
+      "message": "Servo following error"
+    },
+    {
+      "code": "M05-A132",
+      "machine_id": "M05",
+      "symptom": "pressure_drop",
+      "message": "Supply pressure below nominal"
+    },
+    {
+      "code": "M05-A133",
+      "machine_id": "M05",
+      "symptom": "vibration_high",
+      "message": "Vibration level above ISO 10816 zone B"
+    }
+  ],
+  "manuals": [
+    {
+      "machine_id": "M01",
+      "title": "Hydraulic Pump \u2014 Service Manual (excerpt)",
+      "sections": [
+        {
+          "heading": "Troubleshooting",
+          "rows": [
+            {
+              "symptom": "flow_low",
+              "possible_causes": [
+                "filter (clogging)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "noise",
+              "possible_causes": [
+                "bearing (lubrication_loss)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "overcurrent",
+              "possible_causes": [
+                "electric_motor (winding_fault)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "pressure_drop",
+              "possible_causes": [
+                "filter (clogging)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "pressure_oscillation",
+              "possible_causes": [
+                "hydraulic_valve (stiction)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "reading_implausible",
+              "possible_causes": [
+                "pressure_sensor (drift)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "temperature_high",
+              "possible_causes": [
+                "electric_motor (winding_fault)",
+                "bearing (wear)",
+                "bearing (lubrication_loss)",
+                "filter (clogging)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "vibration_high",
+              "possible_causes": [
+                "electric_motor (misalignment)",
+                "bearing (wear)"
+              ],
+              "note": "Confirm with logs before replacement."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "machine_id": "M02",
+      "title": "Air Compressor \u2014 Service Manual (excerpt)",
+      "sections": [
+        {
+          "heading": "Troubleshooting",
+          "rows": [
+            {
+              "symptom": "flow_low",
+              "possible_causes": [
+                "filter (clogging)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "noise",
+              "possible_causes": [
+                "bearing (lubrication_loss)",
+                "belt (slippage)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "overcurrent",
+              "possible_causes": [
+                "electric_motor (winding_fault)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "pressure_drop",
+              "possible_causes": [
+                "filter (clogging)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "reading_implausible",
+              "possible_causes": [
+                "temperature_sensor (drift)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "speed_unstable",
+              "possible_causes": [
+                "belt (slippage)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "temperature_high",
+              "possible_causes": [
+                "electric_motor (winding_fault)",
+                "bearing (wear)",
+                "bearing (lubrication_loss)",
+                "filter (clogging)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "vibration_high",
+              "possible_causes": [
+                "electric_motor (misalignment)",
+                "bearing (wear)"
+              ],
+              "note": "Confirm with logs before replacement."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "machine_id": "M03",
+      "title": "Conveyor \u2014 Service Manual (excerpt)",
+      "sections": [
+        {
+          "heading": "Troubleshooting",
+          "rows": [
+            {
+              "symptom": "noise",
+              "possible_causes": [
+                "gearbox (tooth_wear)",
+                "belt (slippage)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "overcurrent",
+              "possible_causes": [
+                "electric_motor (winding_fault)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "signal_dropout",
+              "possible_causes": [
+                "speed_sensor (intermittent)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "speed_unstable",
+              "possible_causes": [
+                "belt (slippage)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "temperature_high",
+              "possible_causes": [
+                "electric_motor (winding_fault)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "vibration_high",
+              "possible_causes": [
+                "electric_motor (misalignment)",
+                "gearbox (tooth_wear)"
+              ],
+              "note": "Confirm with logs before replacement."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "machine_id": "M04",
+      "title": "Cnc Mill \u2014 Service Manual (excerpt)",
+      "sections": [
+        {
+          "heading": "Troubleshooting",
+          "rows": [
+            {
+              "symptom": "flow_low",
+              "possible_causes": [
+                "coolant_pump (cavitation)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "noise",
+              "possible_causes": [
+                "bearing (lubrication_loss)",
+                "coolant_pump (cavitation)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "reading_implausible",
+              "possible_causes": [
+                "temperature_sensor (drift)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "surface_finish_poor",
+              "possible_causes": [
+                "spindle (imbalance)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "temperature_high",
+              "possible_causes": [
+                "bearing (wear)",
+                "bearing (lubrication_loss)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "vibration_high",
+              "possible_causes": [
+                "spindle (imbalance)",
+                "bearing (wear)"
+              ],
+              "note": "Confirm with logs before replacement."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "machine_id": "M05",
+      "title": "Packaging Robot \u2014 Service Manual (excerpt)",
+      "sections": [
+        {
+          "heading": "Troubleshooting",
+          "rows": [
+            {
+              "symptom": "cycle_slow",
+              "possible_causes": [
+                "pneumatic_valve (leak)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "missed_detection",
+              "possible_causes": [
+                "proximity_sensor (misadjustment)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "noise",
+              "possible_causes": [
+                "gearbox (tooth_wear)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "position_error",
+              "possible_causes": [
+                "servo_motor (encoder_fault)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "pressure_drop",
+              "possible_causes": [
+                "pneumatic_valve (leak)"
+              ],
+              "note": "Confirm with logs before replacement."
+            },
+            {
+              "symptom": "vibration_high",
+              "possible_causes": [
+                "gearbox (tooth_wear)"
+              ],
+              "note": "Confirm with logs before replacement."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "maintenance_history": [
+    {
+      "machine_id": "M01",
+      "date": "2023-01-03",
+      "component": "electric_motor",
+      "action": "realign motor-load coupling"
+    },
+    {
+      "machine_id": "M01",
+      "date": "2025-10-01",
+      "component": "bearing",
+      "action": "replace bearing"
+    },
+    {
+      "machine_id": "M01",
+      "date": "2025-11-23",
+      "component": "filter",
+      "action": "replace filter element"
+    },
+    {
+      "machine_id": "M01",
+      "date": "2025-12-18",
+      "component": "bearing",
+      "action": "replace bearing"
+    },
+    {
+      "machine_id": "M02",
+      "date": "2023-04-25",
+      "component": "belt",
+      "action": "retension or replace belt"
+    },
+    {
+      "machine_id": "M02",
+      "date": "2023-07-04",
+      "component": "belt",
+      "action": "retension or replace belt"
+    },
+    {
+      "machine_id": "M02",
+      "date": "2023-08-19",
+      "component": "filter",
+      "action": "replace filter element"
+    },
+    {
+      "machine_id": "M02",
+      "date": "2023-12-14",
+      "component": "belt",
+      "action": "retension or replace belt"
+    },
+    {
+      "machine_id": "M03",
+      "date": "2025-02-02",
+      "component": "belt",
+      "action": "retension or replace belt"
+    },
+    {
+      "machine_id": "M03",
+      "date": "2025-02-13",
+      "component": "electric_motor",
+      "action": "realign motor-load coupling"
+    },
+    {
+      "machine_id": "M03",
+      "date": "2025-05-26",
+      "component": "belt",
+      "action": "retension or replace belt"
+    },
+    {
+      "machine_id": "M03",
+      "date": "2025-10-28",
+      "component": "electric_motor",
+      "action": "realign motor-load coupling"
+    },
+    {
+      "machine_id": "M04",
+      "date": "2023-04-28",
+      "component": "bearing",
+      "action": "relubricate and inspect seals"
+    },
+    {
+      "machine_id": "M04",
+      "date": "2024-06-07",
+      "component": "coolant_pump",
+      "action": "clear suction line, check coolant level"
+    },
+    {
+      "machine_id": "M04",
+      "date": "2024-08-21",
+      "component": "spindle",
+      "action": "balance spindle, check tool holder"
+    },
+    {
+      "machine_id": "M04",
+      "date": "2025-11-06",
+      "component": "coolant_pump",
+      "action": "clear suction line, check coolant level"
+    },
+    {
+      "machine_id": "M05",
+      "date": "2023-04-27",
+      "component": "gearbox",
+      "action": "inspect gears, replace worn stage"
+    },
+    {
+      "machine_id": "M05",
+      "date": "2023-11-16",
+      "component": "gearbox",
+      "action": "inspect gears, replace worn stage"
+    },
+    {
+      "machine_id": "M05",
+      "date": "2024-05-03",
+      "component": "servo_motor",
+      "action": "replace encoder"
+    },
+    {
+      "machine_id": "M05",
+      "date": "2024-07-09",
+      "component": "gearbox",
+      "action": "inspect gears, replace worn stage"
+    }
+  ]
+}
