@@ -27,7 +27,10 @@ from pathlib import Path
 SYSTEM_PROMPT = """You are an industrial maintenance diagnostic agent running on-site.
 Diagnose the root cause of the reported machine problem.
 
-You respond ONLY with a single JSON object, no other text. Two forms are allowed:
+You respond ONLY with a single JSON object, no other text. Exactly ONE action
+per turn: one tool call OR one final diagnosis — never several. After each tool
+call you will receive the result and can decide your next single action.
+Two forms are allowed:
 
 1. Call a tool:
 {"tool": "manual_search", "args": {"query": "<symptom or keyword>"}}
@@ -91,13 +94,17 @@ def chat(endpoint: str, messages: list, max_tokens: int = 200) -> tuple:
 
 
 def parse_json(text: str):
-    m = re.search(r"\{.*\}", text, re.DOTALL)
-    if not m:
-        return None
-    try:
-        return json.loads(m.group(0))
-    except json.JSONDecodeError:
-        return None
+    """Return the FIRST valid JSON object in the text (small models often
+    emit several actions at once; we execute one action per turn)."""
+    dec = json.JSONDecoder()
+    i = text.find("{")
+    while i != -1:
+        try:
+            obj, _ = dec.raw_decode(text[i:])
+            return obj
+        except json.JSONDecodeError:
+            i = text.find("{", i + 1)
+    return None
 
 
 def run_episode(endpoint: str, world: dict, ep: dict, max_steps: int = 6) -> dict:
