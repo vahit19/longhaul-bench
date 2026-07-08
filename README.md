@@ -72,7 +72,7 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 | Quantized SLM runtime (llama.cpp) | ✅ implemented | M2 smoke run, results above |
 | Agentic retrieval | 🟡 keyword-based | `manual_search` tool; embedding retrieval → M2-b |
 | Vector DB (Qdrant) + embedding RAG | 🔜 M2-b | planned |
-| Inspect AI harness port | 🔜 M2-b | planned (custom harness today) |
+| Inspect AI harness | ✅ implemented | `evals/longhaul_task.py` — dataset/solver/scorer, standard Inspect logs; 10-ep validation: 70% ± 15.3% |
 | Improvement operators + memory budget | 🔜 M3 | planned |
 | LangGraph comparison arm | 🔜 M3 | planned |
 | DeepEval/Ragas RAG metrics | 🔜 analysis phase | planned |
