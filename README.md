@@ -58,6 +58,19 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 - [ ] v0.3 — Jetson + Qualcomm AI Hub measurements, quantization ablation (4-bit vs 8-bit)
 - [ ] Report — arXiv technical report + blog series
 
+## Architecture
+
+```mermaid
+flowchart LR
+    G[Seeded world generator] -->|world.json| T[Tool services<br/>alarm_lookup / manual_search / maintenance_history]
+    G -->|episodes.jsonl| A[Diagnostic agent<br/>quantized SLM, llama.cpp]
+    A <-->|one JSON action per turn| T
+    A -->|experience| M[Memory / knowledge state]
+    M -->|improvement operators<br/>append / reflect / metric-gated| A
+    A -->|diagnosis| S[Scorer vs hidden ground truth]
+    S --> R[Reliability metrics<br/>accuracy curve · corruption · drift<br/>latency · RAM · anomaly rate]
+```
+
 ## Quickstart
 
 Generate a reproducible demo world — pure Python 3.10+, no dependencies:
