@@ -44,7 +44,9 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 
 ## Stack & reproducibility
 
-- Agent runtime: local quantized SLM (llama.cpp / ONNX Runtime), FastAPI tool services
+- **Agent (M2+):** tool-using diagnostic agent — `alarm_lookup`, `manual_search`, `maintenance_history`, `log_fetch` — running a local quantized SLM (llama.cpp, 4-bit GGUF: Qwen2.5-3B, Phi-3.5-mini). Core loop kept dependency-light for edge; a LangGraph implementation is included as a comparison arm (framework overhead is itself measured).
+- **Retrieval:** vector search over manual excerpts — local Qdrant (Docker) with a small embedding model; RAG quality tracked with faithfulness/context-precision metrics (DeepEval/Ragas) in the analysis appendix.
+- FastAPI tool services
 - Eval harness: [Inspect AI](https://inspect.aisi.org.uk/) task definitions and scorers; behavioral auditing with Petri
 - **Execution in a resource-capped Linux container** (Docker, e.g. `--memory=8g --cpus=4`): enforces the constrained-device budget identically on any host and makes runs reproducible for the report
 - Hardware targets: x86 CPU (8GB RAM budget) → NVIDIA Jetson Orin → Snapdragon-class devices via Qualcomm AI Hub (remote real-device profiling)
