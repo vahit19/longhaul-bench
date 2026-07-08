@@ -100,15 +100,15 @@ Same protocol, same episodes: **Qwen2.5-3B 65-70% exact / 6.3 s** vs **Phi-3.5-m
 
 A key architectural split: the **on-device runtime** (what ships to the edge) vs the **lab-side harness** (evaluation tooling that never leaves the workstation).
 
-| Component | Measured RAM | Ships to device? |
+| Component | Measured RAM | Where it runs |
 |---|---|---|
-| llama-server + Qwen2.5-3B Q4 (4k ctx) | 3,650 MB | ✅ runtime |
-| llama-server + nomic-embed (embeddings) | 174 MB | ✅ runtime |
-| Python agent + qdrant-client (in-process) | ~90 MB | ✅ runtime |
-| LangGraph + langchain imports | +38 MB | optional |
+| llama-server + Qwen2.5-3B Q4 (4k ctx) | 3,650 MB | on the edge device |
+| llama-server + nomic-embed (embeddings) | 174 MB | on the edge device |
+| Python agent + qdrant-client (in-process) | ~90 MB | on the edge device |
+| LangGraph + langchain imports | +38 MB | on the edge device (optional arm) |
 | **On-device total** | **≈ 4.0 GB** | fits an 8 GB device with ~4 GB headroom |
-| Inspect AI harness | +46 MB import (lab) | ❌ lab-side |
-| DeepEval, matplotlib, scipy | — | ❌ lab-side |
+| Inspect AI harness (implemented — see Stack status) | +46 MB import | lab workstation, drives the device remotely |
+| DeepEval, matplotlib, scipy | — | lab workstation (analysis only) |
 
 Device-class verdict (3B Q4 stack): **8 GB class** (Raspberry Pi 5, Jetson Orin Nano, industrial IPCs) — fits, measured. **4 GB class** — requires the 1.5B model variant (≈1.8 GB total, planned ablation). **< 2 GB** — out of scope (TinyML regime). All runtime components have native ARM64 support (llama.cpp builds, pure-Python qdrant-client/langgraph).
 
