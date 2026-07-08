@@ -110,14 +110,17 @@ def parse_json(text: str):
     return None
 
 
-def run_episode(endpoint: str, world: dict, ep: dict, max_steps: int = 6) -> dict:
-    tools = Tools(world, ep["machine_id"], ep["alarms"])
+def run_episode(endpoint: str, world: dict, ep: dict, max_steps: int = 6,
+                memory_context: str = "", retriever=None) -> dict:
+    tools = Tools(world, ep["machine_id"], ep["alarms"], retriever=retriever)
     user = (
         f"Machine {ep['machine_id']} problem report.\n"
         f"Active alarms: {json.dumps(ep['alarms'])}\n"
         f"Log excerpt: {json.dumps(ep['log_excerpt'])}\n"
         f"Operator note: {ep['operator_note']}"
     )
+    if memory_context:
+        user += "\n\n" + memory_context
     messages = [{"role": "system", "content": SYSTEM_PROMPT}, {"role": "user", "content": user}]
     t0 = time.time()
     tokens = {"prompt": 0, "completion": 0}

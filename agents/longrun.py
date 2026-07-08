@@ -1,0 +1,120 @@
+"""Long-horizon experiment driver for LongHaul-Bench (the core experiment).
+
+Runs the SLM agent SEQUENTIALLY through an episode stream. After each episode
+the chosen improvement operator updates the knowledge state from outcome
+feedback. Every --probe-every episodes, a frozen probe set is re-run WITHOUT
+memory writes to measure knowledge-quality drift. Per-episode telemetry:
+correctness, latency, tokens, memory entries/bytes/evictions, and RSS of the
+agent process plus all llama-server processes (psutil).
+
+Usage (llama-server on :8080; run with local/venv python):
+    local/venv/Scripts/python agents/longrun.py \
+        --world runs/v01/world.json --episodes runs/v01/episodes.jsonl \
+        --operator reflect --policy compress --budget 100 \
+        --limit 10 --probe-every 5 --out runs/m3_smoke_reflect
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import random
+import statistics
+import sys
+import time
+from pathlib import Path
+
+import psutil
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from agents.memory import MemoryStore, apply_operator  # noqa: E402
+from agents.slm_agent import run_episode  # noqa: E402
+
+
+def system_rss_mb() -> float:
+    """Agent process + every llama-server process, MB."""
+    total = psutil.Process().memory_info().rss
+    for p in psutil.process_iter(["name", "memory_info"]):
+        try:
+            if p.info["name"] and "llama-server" in p.info["name"]:
+                total += p.info["memory_info"].rss
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            pass
+    return round(total / 1e6)
+
+
+def symptoms_of(ep: dict, alarm_symptom: dict) -> list:
+    return [alarm_symptom[a["code"]] for a in ep["alarms"] if a["code"] in alarm_symptom]
+
+
+def main() -> None:
+    p = argparse.ArgumentParser()
+    p.add_argument("--world", type=Path, required=True)
+    p.add_argument("--episodes", type=Path, required=True)
+    p.add_argument("--operator", choices=["frozen", "append", "reflect", "gated"], required=True)
+    p.add_argument("--policy", choices=["fifo", "importance", "compress"], default="fifo")
+    p.add_argument("--budget", type=int, default=100)
+    p.add_argument("--feedback-noise", type=float, default=0.0)
+    p.add_argument("--limit", type=int, default=10)
+    p.add_argument("--probe-every", type=int, default=50)
+    p.add_argument("--probe-size", type=int, default=5)
+    p.add_argument("--seed", type=int, default=7)
+    p.add_argument("--endpoint", default="http://127.0.0.1:8080")
+    p.add_argument("--out", type=Path, required=True)
+    args = p.parse_args()
+
+    world = json.loads(args.world.read_text(encoding="utf-8"))
+    alarm_symptom = {a["code"]: a["symptom"] for a in world["alarm_table"]}
+    all_eps = [json.loads(l) for l in args.episodes.open(encoding="utf-8")]
+    probes, stream = all_eps[: args.probe_size], all_eps[args.probe_size: args.probe_size + args.limit]
+
+    store = MemoryStore(budget_entries=args.budget, policy=args.policy)
+    rng = random.Random(args.seed)
+    args.out.mkdir(parents=True, exist_ok=True)
+
+    def run_one(ep: dict, use_memory: bool) -> dict:
+        symptoms = symptoms_of(ep, alarm_symptom)
+        ctx = ""
+        if use_memory:
+            cases = store.recall(ep["machine_id"], symptoms)
+            if cases:
+                ctx = store.render(cases)
+        r = run_episode(args.endpoint, world, ep, memory_context=ctx)
+        r["memory_used"] = bool(ctx)
+        return r
+
+    results, probe_curve = [], []
+    with (args.out / "results.jsonl").open("w", encoding="utf-8") as f:
+        for i, ep in enumerate(stream, 1):
+            r = run_one(ep, use_memory=True)
+            symptoms = symptoms_of(ep, alarm_symptom)
+            apply_operator(args.operator, store, ep["machine_id"], symptoms,
+                           ep["ground_truth"], rng, args.feedback_noise)
+            r.update({"episode_index": i, **store.stats(), "system_rss_mb": system_rss_mb()})
+            results.append(r)
+            f.write(json.dumps(r) + "\n")
+            f.flush()
+
+            if i % args.probe_every == 0 or i == len(stream):
+                probe_acc = statistics.mean(
+                    run_one(pe, use_memory=True)["exact_correct"] for pe in probes)
+                probe_curve.append({"after_episode": i, "probe_exact": probe_acc})
+                print(f"[{i}/{len(stream)}] probe={probe_acc:.0%} "
+                      f"mem={store.stats()} rss={system_rss_mb()}MB", flush=True)
+
+    summary = {
+        "operator": args.operator, "policy": args.policy, "budget": args.budget,
+        "feedback_noise": args.feedback_noise, "episodes": len(results),
+        "exact_accuracy": statistics.mean(r["exact_correct"] for r in results),
+        "memory_hit_rate": statistics.mean(r["memory_used"] for r in results),
+        "final_memory": store.stats(),
+        "peak_system_rss_mb": max(r["system_rss_mb"] for r in results),
+        "latency_p50_s": statistics.median(r["latency_s"] for r in results),
+        "probe_curve": probe_curve,
+    }
+    (args.out / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    print(json.dumps(summary, indent=2))
+
+
+if __name__ == "__main__":
+    main()

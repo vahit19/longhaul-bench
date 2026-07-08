@@ -73,7 +73,8 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 | Agentic retrieval — keyword & vector modes | ✅ implemented | `manual_search` tool; `LONGHAUL_RETRIEVAL=vector` switches modes (ablation axis) |
 | Vector DB (Qdrant, serverless local) + embedding RAG | ✅ implemented | `environments/retrieval.py` — nomic-embed-text via llama.cpp `--embeddings`, no torch/cloud; preliminary 10-ep: vector 50% vs keyword 70% (CIs overlap; full comparison in M4) |
 | Inspect AI harness | ✅ implemented | `evals/longhaul_task.py` — dataset/solver/scorer, standard Inspect logs; 10-ep validation: 70% ± 15.3% |
-| Improvement operators + memory budget | 🔜 M3 | planned — the core experiment |
+| Improvement operators + memory budget | ✅ implemented | `agents/memory.py` + `agents/longrun.py` — 4 operators × 3 forgetting policies, feedback-noise knob, frozen probes, psutil RSS tracking; 10-ep smoke (reflect/compress): 70% exact, memory hit-rate 50%, probe stable at 80%, p50 4.3s |
+| Deterministic retrieval metrics (no judge) | ✅ implemented | `scripts/retrieval_metrics.py` — hit@5 / MRR vs oracle rows; 50-ep: keyword MRR 0.857, vector MRR 0.95 |
 | LangGraph comparison arm | ✅ implemented | `agents/langgraph_agent.py` — StateGraph, same protocol; 10-ep: 70% exact, p50 5.96s (no measurable overhead vs bare loop) |
 | DeepEval RAG metrics (local judge) | ✅ implemented | `scripts/rag_metrics.py` — contextual relevancy with the local SLM as judge; 5-case vector mode: 0.327 |
 | Jetson / Qualcomm AI Hub (GenieX, llama.cpp plugin) | 🔜 M5 | planned |
