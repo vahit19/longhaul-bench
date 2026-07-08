@@ -46,9 +46,10 @@ failure_mode must be values seen in tool results (e.g. "bearing", "wear")."""
 
 
 class Tools:
-    def __init__(self, world: dict, machine_id: str, alarms: list):
+    def __init__(self, world: dict, machine_id: str, alarms: list, retriever=None):
         self.machine_id = machine_id
         self.alarms = alarms
+        self.retriever = retriever  # optional VectorIndex; None -> keyword search
         self.alarm_symptom = {a["code"]: a["symptom"] for a in world["alarm_table"]}
         self.manual_rows = [
             row
@@ -64,6 +65,8 @@ class Tools:
         ]
 
     def manual_search(self, query: str = "", **_) -> list:
+        if self.retriever is not None:
+            return self.retriever.search(self.machine_id, query or "fault diagnosis", k=5)
         words = set(re.findall(r"[a-z_]{3,}", query.lower()))
         scored = []
         for row in self.manual_rows:

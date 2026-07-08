@@ -70,8 +70,8 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 |---|---|---|
 | Tool-calling agent loop | ✅ implemented | `agents/slm_agent.py` — JSON action protocol, mean 2.05 tool calls/ep measured |
 | Quantized SLM runtime (llama.cpp) | ✅ implemented | M2 smoke run, results above |
-| Agentic retrieval | 🟡 keyword-based | `manual_search` tool; embedding retrieval → M2-b |
-| Vector DB (Qdrant) + embedding RAG | 🔜 M2-b | planned |
+| Agentic retrieval — keyword & vector modes | ✅ implemented | `manual_search` tool; `LONGHAUL_RETRIEVAL=vector` switches modes (ablation axis) |
+| Vector DB (Qdrant, serverless local) + embedding RAG | ✅ implemented | `environments/retrieval.py` — nomic-embed-text via llama.cpp `--embeddings`, no torch/cloud; preliminary 10-ep: vector 50% vs keyword 70% (CIs overlap; full comparison in M4) |
 | Inspect AI harness | ✅ implemented | `evals/longhaul_task.py` — dataset/solver/scorer, standard Inspect logs; 10-ep validation: 70% ± 15.3% |
 | Improvement operators + memory budget | 🔜 M3 | planned |
 | LangGraph comparison arm | 🔜 M3 | planned |

@@ -31,6 +31,14 @@ from agents.slm_agent import SYSTEM_PROMPT, Tools, parse_json  # noqa: E402
 WORLD = json.loads((REPO / "runs" / "v01" / "world.json").read_text(encoding="utf-8"))
 EPISODES = REPO / "runs" / "v01" / "episodes.jsonl"
 
+# retrieval mode: LONGHAUL_RETRIEVAL=vector -> Qdrant + embeddings; default keyword
+import os  # noqa: E402
+
+RETRIEVER = None
+if os.environ.get("LONGHAUL_RETRIEVAL") == "vector":
+    from environments.retrieval import VectorIndex  # noqa: E402
+    RETRIEVER = VectorIndex(WORLD, os.environ.get("EMBED_BASE_URL", "http://127.0.0.1:8081"))
+
 
 def episode_dataset() -> MemoryDataset:
     samples = []
@@ -60,7 +68,7 @@ def diagnostic_loop(max_steps: int = 6):
 
     async def solve(state: TaskState, generate: Generate) -> TaskState:
         model = get_model()
-        tools = Tools(WORLD, state.metadata["machine_id"], state.metadata["alarms"])
+        tools = Tools(WORLD, state.metadata["machine_id"], state.metadata["alarms"], retriever=RETRIEVER)
         messages = [
             ChatMessageSystem(content=SYSTEM_PROMPT),
             ChatMessageUser(content=state.input_text),
