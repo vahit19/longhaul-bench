@@ -39,7 +39,7 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 **No proprietary or employer data is used — by design.** A publishable, reproducible benchmark requires data anyone can regenerate and audit; confidential plant data would make the work both legally risky and scientifically unverifiable.
 
 - **Synthetic core:** machine manuals, alarm-code tables, maintenance history, and HMI/PLC-style logs are procedurally generated from templates with a hidden ground-truth causal model, so diagnostic correctness is objectively scoreable.
-- **Realism grounding (public sources only):** fault statistics and degradation patterns informed by public datasets — e.g., UCI AI4I 2020 Predictive Maintenance, NASA C-MAPSS turbofan degradation — and publicly available vendor documentation formats.
+- **Realism grounding (public sources only — planned, M1-b):** fault-frequency statistics and degradation patterns will be calibrated against public datasets (UCI AI4I 2020 Predictive Maintenance, NASA C-MAPSS) and public vendor-manual formats. Current v0 templates are hand-designed; this calibration is a declared open item, not yet wired into the generator.
 - Every run's environment is fully determined by a random seed → anyone can reproduce the exact 1000-episode world.
 
 ## Stack & reproducibility
