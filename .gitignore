@@ -9,3 +9,4 @@ runs/**/artifacts/
 .inspect/
 logs/
 runs/sweep_*/
+local/
