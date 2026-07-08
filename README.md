@@ -66,6 +66,16 @@ python environments/generator.py --machines 5 --episodes 50 --seed 42 --out runs
 
 Outputs `world.json` (machines, alarm-code table, manual excerpts for RAG, maintenance history) and `episodes.jsonl` (diagnostic episodes with hidden ground-truth root cause). Same seed → byte-identical world. A pre-generated sample lives in `runs/demo/`.
 
+**Difficulty tiers** (calibrated against the LLM-free heuristic baseline, 1000 episodes, seed 42):
+
+| Tier | `--log-dropout` | `--symptom-dropout` | Baseline exact accuracy |
+|---|---|---|---|
+| easy | 0.0 | 0.0 | 99.9% |
+| standard | 0.3 | 0.3 | 86.3% |
+| hard | 0.7 | 0.5 | 73.3% |
+
+Further hardening (multi-fault episodes, overlapping log vocabulary) is tracked in `docs/PAPER_PLAN.md` M1.
+
 ## Repository layout
 
 ```

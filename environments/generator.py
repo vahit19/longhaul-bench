@@ -273,7 +273,7 @@ def _fill_log(template: str, rng: random.Random) -> str:
 
 
 def build_episode(rng: random.Random, i: int, machines: list[Machine], alarm_table: list[dict],
-                  log_dropout: float = 0.3) -> Episode:
+                  log_dropout: float = 0.3, symptom_dropout: float = 0.3) -> Episode:
     m = rng.choice(machines)
     component = rng.choice([c for c in m.components if FAILURE_MODES.get(c)])
     mode_name = rng.choice(list(FAILURE_MODES[component]))
@@ -281,11 +281,15 @@ def build_episode(rng: random.Random, i: int, machines: list[Machine], alarm_tab
 
     lookup = {(a["machine_id"], a["symptom"]): a for a in alarm_table}
     alarms = [lookup[(m.machine_id, s)] for s in mode["symptoms"] if (m.machine_id, s) in lookup]
-    # noise: occasionally a spurious, unrelated alarm fires too
-    if rng.random() < 0.25:
-        others = [a for a in alarm_table if a["machine_id"] == m.machine_id and a not in alarms]
-        if others:
-            alarms.append(rng.choice(others))
+    # difficulty knob: sensors miss events — each true symptom alarm fires
+    # with probability (1 - symptom_dropout); at least one always fires
+    kept = [a for a in alarms if rng.random() >= symptom_dropout]
+    alarms = kept if kept else ([rng.choice(alarms)] if alarms else [])
+    # noise: 0-2 spurious, unrelated alarms fire too
+    n_noise = rng.choices([0, 1, 2], weights=[0.45, 0.4, 0.15])[0]
+    others = [a for a in alarm_table if a["machine_id"] == m.machine_id and a not in alarms]
+    for a in rng.sample(others, min(n_noise, len(others))):
+        alarms.append(a)
     rng.shuffle(alarms)
 
     # difficulty knob: with probability `log_dropout` the detailed log is
@@ -325,6 +329,8 @@ def main() -> None:
     p.add_argument("--seed", type=int, default=42)
     p.add_argument("--log-dropout", type=float, default=0.3,
                    help="probability that an episode has no detailed log (difficulty knob)")
+    p.add_argument("--symptom-dropout", type=float, default=0.3,
+                   help="probability that each true symptom alarm fails to fire (difficulty knob)")
     p.add_argument("--out", type=Path, default=Path("runs/demo"))
     args = p.parse_args()
 
@@ -338,7 +344,7 @@ def main() -> None:
         "manuals": [build_manual(m) for m in machines],
         "maintenance_history": [h for m in machines for h in build_maintenance_history(rng, m)],
     }
-    episodes = [build_episode(rng, i, machines, alarm_table, args.log_dropout) for i in range(args.episodes)]
+    episodes = [build_episode(rng, i, machines, alarm_table, args.log_dropout, args.symptom_dropout) for i in range(args.episodes)]
 
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "world.json").write_text(json.dumps(world, indent=2), encoding="utf-8")

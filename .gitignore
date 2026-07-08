@@ -8,3 +8,4 @@ runs/**/artifacts/
 *.onnx
 .inspect/
 logs/
+runs/sweep_*/
