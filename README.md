@@ -1,0 +1,68 @@
+# LongHaul-Bench: Long-Horizon Reliability of Industrial Edge Agents
+
+> **Research question:** Does an industrial diagnostic agent's knowledge state *improve* or *degrade* over 1000+ task iterations — and which improvement operators keep it reliable under edge-hardware constraints?
+
+**Status:** Design phase (v0). Author: Vahit Feryad, PhD.
+
+## Why this benchmark exists
+
+Agent benchmarks today measure single-episode success on web and coding tasks, on cloud-scale models, with unlimited compute. Real industrial agents live in a different world:
+
+- **Offline** — no cloud API; a quantized local SLM does the reasoning.
+- **Long-lived** — the agent runs for months, accumulating experience across thousands of diagnostic episodes.
+- **Constrained** — CPU-only or Jetson-class hardware; RAM and latency budgets are hard limits.
+- **High-stakes** — a corrupted knowledge base gives confidently wrong maintenance advice.
+
+Nobody measures whether the *self-improvement* mechanisms proposed in recent literature (experience-driven memory, reflection, metric-driven prompt optimization) stay reliable in this regime. LongHaul-Bench does.
+
+## What is measured
+
+Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environment:
+
+| Axis | Metric |
+|---|---|
+| Task performance | success rate curve, time-to-diagnosis |
+| Knowledge integrity | corruption rate, contradiction count, stale-fact retention |
+| Drift | performance on a frozen probe set re-run every K episodes |
+| Edge cost | p50/p95 latency, peak RAM, tokens/episode — on CPU and Jetson |
+| Safety | fallback-trigger correctness, confidently-wrong rate |
+
+## Compared improvement operators
+
+1. **Append-only memory** (naive baseline) — every episode's summary is stored.
+2. **Reflection → structured experience** (MUSE-style) — trajectories distilled into typed records before integration.
+3. **Metric-driven optimization** (DSPy/GEPA-style) — operators updated only when a held-out eval improves.
+4. **Frozen agent** (control) — no learning; isolates environment drift from agent drift.
+
+## Data sources & provenance
+
+**No proprietary or employer data is used — by design.** A publishable, reproducible benchmark requires data anyone can regenerate and audit; confidential plant data would make the work both legally risky and scientifically unverifiable.
+
+- **Synthetic core:** machine manuals, alarm-code tables, maintenance history, and HMI/PLC-style logs are procedurally generated from templates with a hidden ground-truth causal model, so diagnostic correctness is objectively scoreable.
+- **Realism grounding (public sources only):** fault statistics and degradation patterns informed by public datasets — e.g., UCI AI4I 2020 Predictive Maintenance, NASA C-MAPSS turbofan degradation — and publicly available vendor documentation formats.
+- Every run's environment is fully determined by a random seed → anyone can reproduce the exact 1000-episode world.
+
+## Stack & reproducibility
+
+- Agent runtime: local quantized SLM (llama.cpp / ONNX Runtime), FastAPI tool services
+- Eval harness: [Inspect AI](https://inspect.aisi.org.uk/) task definitions and scorers; behavioral auditing with Petri
+- **Execution in a resource-capped Linux container** (Docker, e.g. `--memory=8g --cpus=4`): enforces the constrained-device budget identically on any host and makes runs reproducible for the report
+- Hardware targets: x86 CPU (8GB RAM budget) → NVIDIA Jetson Orin → Snapdragon-class devices via Qualcomm AI Hub (remote real-device profiling)
+
+## Roadmap
+
+- [ ] v0.1 — environment generator + frozen-agent baseline, 1000-episode run on CPU
+- [ ] v0.2 — operators (1)–(3), comparison report
+- [ ] v0.3 — Jetson + Qualcomm AI Hub measurements, quantization ablation (4-bit vs 8-bit)
+- [ ] Report — arXiv technical report + blog series
+
+## Repository layout
+
+```
+environments/   synthetic industrial world generator
+agents/         baseline agent, memory module
+operators/      improvement operator implementations
+evals/          Inspect AI tasks, probe sets, scorers
+runs/           experiment configs + result artifacts
+docs/           design notes, blog drafts
+```
