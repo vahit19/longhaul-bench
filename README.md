@@ -78,6 +78,22 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 | DeepEval RAG metrics (local judge) | ✅ implemented | `scripts/rag_metrics.py` — contextual relevancy with the local SLM as judge; 5-case vector mode: 0.327 |
 | Jetson / Qualcomm AI Hub (GenieX, llama.cpp plugin) | 🔜 M5 | planned |
 
+## Deployment footprint (measured, not estimated)
+
+A key architectural split: the **on-device runtime** (what ships to the edge) vs the **lab-side harness** (evaluation tooling that never leaves the workstation).
+
+| Component | Measured RAM | Ships to device? |
+|---|---|---|
+| llama-server + Qwen2.5-3B Q4 (4k ctx) | 3,650 MB | ✅ runtime |
+| llama-server + nomic-embed (embeddings) | 174 MB | ✅ runtime |
+| Python agent + qdrant-client (in-process) | ~90 MB | ✅ runtime |
+| LangGraph + langchain imports | +38 MB | optional |
+| **On-device total** | **≈ 4.0 GB** | fits an 8 GB device with ~4 GB headroom |
+| Inspect AI harness | +46 MB import (lab) | ❌ lab-side |
+| DeepEval, matplotlib, scipy | — | ❌ lab-side |
+
+Device-class verdict (3B Q4 stack): **8 GB class** (Raspberry Pi 5, Jetson Orin Nano, industrial IPCs) — fits, measured. **4 GB class** — requires the 1.5B model variant (≈1.8 GB total, planned ablation). **< 2 GB** — out of scope (TinyML regime). All runtime components have native ARM64 support (llama.cpp builds, pure-Python qdrant-client/langgraph).
+
 ## Roadmap
 
 - [ ] v0.1 — environment generator + frozen-agent baseline, 1000-episode run on CPU
