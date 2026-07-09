@@ -80,20 +80,28 @@ class Tools:
         return self.history[-5:]
 
 
-def chat(endpoint: str, messages: list, max_tokens: int = 200) -> tuple:
-    req = urllib.request.Request(
-        endpoint + "/v1/chat/completions",
-        data=json.dumps({
-            "messages": messages,
-            "temperature": 0.0,
-            "max_tokens": max_tokens,
-        }).encode(),
-        headers={"Content-Type": "application/json"},
-    )
-    with urllib.request.urlopen(req, timeout=300) as r:
-        body = json.loads(r.read())
-    usage = body.get("usage", {})
-    return body["choices"][0]["message"]["content"], usage
+def chat(endpoint: str, messages: list, max_tokens: int = 200, retries: int = 3) -> tuple:
+    payload = json.dumps({
+        "messages": messages,
+        "temperature": 0.0,
+        "max_tokens": max_tokens,
+    }).encode()
+    last_err = None
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(
+                endpoint + "/v1/chat/completions",
+                data=payload,
+                headers={"Content-Type": "application/json"},
+            )
+            with urllib.request.urlopen(req, timeout=300) as r:
+                body = json.loads(r.read())
+            usage = body.get("usage", {})
+            return body["choices"][0]["message"]["content"], usage
+        except (TimeoutError, OSError) as e:  # transient server hiccups on long runs
+            last_err = e
+            time.sleep(5 * (attempt + 1))
+    raise last_err
 
 
 def parse_json(text: str):
