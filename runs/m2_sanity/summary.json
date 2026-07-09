@@ -1,0 +1,11 @@
+{
+  "episodes": 5,
+  "component_accuracy": 0.8,
+  "exact_accuracy": 0.8,
+  "latency_p50_s": 6.91,
+  "latency_p95_s": 7.36,
+  "mean_tokens_per_episode": 1673,
+  "mean_tool_calls": 2.2,
+  "anomaly_rate": 0.0,
+  "no_diagnosis_rate": 0.0
+}
