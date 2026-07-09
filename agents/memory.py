@@ -105,7 +105,7 @@ class MemoryStore:
 
 def apply_operator(operator: str, store: MemoryStore, machine_id: str, symptoms: list,
                    gt: dict, rng: random.Random, feedback_noise: float = 0.0,
-                   alternatives: list = None) -> None:
+                   alternatives: list = None, validator=None) -> None:
     """Update the knowledge state after an episode, per the chosen operator.
 
     Feedback models post-repair confirmation; with probability feedback_noise
@@ -125,6 +125,10 @@ def apply_operator(operator: str, store: MemoryStore, machine_id: str, symptoms:
             component, mode = rng.choice(others)
         else:
             component = component + "_misdiagnosed"
+
+    # mitigation gate (write-side): refuse records inconsistent with the manual
+    if validator is not None and not validator(component, mode):
+        return
 
     if operator == "append":
         store.add(machine_id, symptoms, component, mode, merge=False)

@@ -62,6 +62,8 @@ def main() -> None:
     p.add_argument("--endpoint", default="http://127.0.0.1:8080")
     p.add_argument("--oracle", action="store_true",
                    help="upper bound: hand the agent the authoritative manual row")
+    p.add_argument("--defense", choices=["none", "read", "write", "both"], default="none",
+                   help="rot-mitigation baselines: manual-consistency gates on memory reads/writes")
     p.add_argument("--traces", action="store_true",
                    help="dump full decision traces to traces.jsonl (knowledge-state autopsies)")
     p.add_argument("--out", type=Path, required=True)
@@ -99,6 +101,14 @@ def main() -> None:
                 return "Authoritative manual row for this fault:\n" + json.dumps(row)
         return ""
 
+    def consistent_with_manual(machine_id: str, symptoms: list, component: str, mode: str) -> bool:
+        """Mitigation gate: is (component, mode) a manual-listed cause for ANY observed symptom?"""
+        cause = f"{component} ({mode})"
+        for row in manual_rows.get(machine_id, []):
+            if row["symptom"] in symptoms and cause in row["possible_causes"]:
+                return True
+        return False
+
     def run_one(ep: dict, use_memory: bool) -> dict:
         symptoms = symptoms_of(ep, alarm_symptom)
         ctx = ""
@@ -106,6 +116,9 @@ def main() -> None:
             ctx = oracle_context(ep)
         elif use_memory:
             cases = store.recall(ep["machine_id"], symptoms)
+            if args.defense in ("read", "both"):  # abstain-on-conflict
+                cases = [c for c in cases
+                         if consistent_with_manual(ep["machine_id"], symptoms, c["component"], c["mode"])]
             if cases:
                 ctx = store.render(cases)
         r = run_episode(args.endpoint, world, ep, memory_context=ctx, include_trace=args.traces)
@@ -122,9 +135,12 @@ def main() -> None:
                                            "trace": r.pop("trace", [])}) + "\n")
                 traces_f.flush()
             symptoms = symptoms_of(ep, alarm_symptom)
+            validator = None
+            if args.defense in ("write", "both"):
+                validator = lambda c, m, _mid=ep["machine_id"], _s=symptoms: consistent_with_manual(_mid, _s, c, m)
             apply_operator(args.operator, store, ep["machine_id"], symptoms,
                            ep["ground_truth"], rng, args.feedback_noise,
-                           alternatives=plausible.get(ep["machine_id"]))
+                           alternatives=plausible.get(ep["machine_id"]), validator=validator)
             r.update({"episode_index": i, **store.stats(), "system_rss_mb": system_rss_mb()})
             results.append(r)
             f.write(json.dumps(r) + "\n")
