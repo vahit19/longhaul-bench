@@ -49,7 +49,7 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 - FastAPI tool services
 - Eval harness: [Inspect AI](https://inspect.aisi.org.uk/) task definitions and scorers; behavioral auditing with Petri
 - **Execution in a resource-capped Linux container** (Docker, e.g. `--memory=8g --cpus=4`): enforces the constrained-device budget identically on any host and makes runs reproducible for the report
-- Hardware targets: x86 CPU (8GB RAM budget) → NVIDIA Jetson Orin → Snapdragon-class devices via Qualcomm AI Hub (remote real-device profiling)
+- Hardware targets: x86 CPU (8GB RAM budget) → real edge devices via Qualcomm AI Hub (Dragonwing RB3 Gen 2 industrial kit, QCS proxies, Snapdragon X); Jetson = future work
 
 ## First results — M2 smoke run (100 episodes, standard tier, CPU)
 
@@ -116,7 +116,7 @@ Same protocol, same episodes: **Qwen2.5-3B 65-70% exact / 6.3 s** vs **Phi-3.5-m
 | LangGraph comparison arm | ✅ implemented | `agents/langgraph_agent.py` — StateGraph, same protocol; 10-ep: 70% exact, p50 5.96s (no measurable overhead vs bare loop) |
 | DeepEval RAG metrics (local judge) | ✅ implemented | `scripts/rag_metrics.py` — contextual relevancy with the local SLM as judge; 5-case vector mode: 0.327 |
 | Qualcomm AI Hub integration | ✅ authenticated & verified | `scripts/aihub_profile.py` — live device inventory confirmed, incl. **Dragonwing RB3 Gen 2 Vision Kit** (industrial IoT), QCS8550/8275 proxies, Snapdragon X Elite; first profile jobs → M5 |
-| Jetson measurements | 🔜 M5 | requires physical Jetson hardware |
+| Jetson measurements | future work | no Jetson hardware available; RB3 Gen 2 + Snapdragon via AI Hub cover the real-edge claim |
 
 ## Deployment footprint (measured, not estimated)
 
