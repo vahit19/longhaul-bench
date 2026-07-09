@@ -1,0 +1,98 @@
+{
+  "operator": "frozen",
+  "policy": "fifo",
+  "budget": 100,
+  "feedback_noise": 0.0,
+  "episodes": 995,
+  "exact_accuracy": 0.5819095477386935,
+  "memory_hit_rate": 0,
+  "final_memory": {
+    "entries": 0,
+    "bytes": 2,
+    "evictions": 0
+  },
+  "peak_system_rss_mb": 7621,
+  "latency_p50_s": 5.96,
+  "probe_curve": [
+    {
+      "after_episode": 50,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 100,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 150,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 200,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 250,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 300,
+      "probe_exact": 0.6
+    },
+    {
+      "after_episode": 350,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 400,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 450,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 500,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 550,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 600,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 650,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 700,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 750,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 800,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 850,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 900,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 950,
+      "probe_exact": 0.8
+    },
+    {
+      "after_episode": 995,
+      "probe_exact": 0.8
+    }
+  ]
+}

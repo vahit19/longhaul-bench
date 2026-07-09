@@ -77,6 +77,27 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 
 Directional signals: operators lift accuracy +10 pts over frozen AND cut latency ~20% (past cases → fewer tool calls). Most interesting: the **manual-oracle only reaches 70%** — on this world, retrieval is not the bottleneck; 3B-model reasoning is.
 
+### M4 night matrix — 995 episodes/arm on `longhaul-v0-standard` (single seed)
+
+| Arm | Exact acc. (95% CI) | Memory hit | p50 latency | Evictions (budget 100) |
+|---|---|---|---|---|
+| frozen (control) | 58.2% ± 3.1 | — | 5.96 s | — |
+| append / fifo | 61.1% ± 3.0 | 99% | 4.42 s | 895 |
+| reflect / compress | 59.5% ± 3.1 | 99% | 4.39 s | 552 |
+| gated / importance | 57.3% ± 3.1 | 99% | 4.28 s | 272 |
+| **oracle (ceiling)** | **75.0% ± 2.7** | 100% | 4.11 s | — |
+| reflect + 40% corrupted feedback | *(re-running after a transient server timeout at ep. 241; transport hardened)* | | | |
+
+![Matrix accuracy curves](runs/m4_night1/figures/matrix_accuracy.png)
+
+**Headline findings (single seed — 5-seed replication pending):**
+1. **Memory is a double-edged sword.** Trace autopsies on the append arm: when recalled cases contain the correct diagnosis (769/987 episodes) accuracy is **70.9%** — near the oracle ceiling; when recall is misleading (218/987) it collapses to **27.5%**, far below the no-memory control. Net operator gains (+1–3 pts, within CI overlap) are the sum of these two large opposing effects; recall precision, not the improvement operator, is the binding lever.
+2. **Latency benefit is robust:** all memory arms cut p50 latency ~25% (fewer tool calls when past cases are in context).
+3. **The memory budget binds hard:** append evicted 895/995 experiences under FIFO; reflect's compression cut evictions by 38%.
+4. **Headroom quantified:** best operator captures ~17% of the frozen→oracle gap (16.8 pts) — current test-time learning leaves most of the available reliability on the table.
+
+Full decision traces (~2.5 MB/arm) are kept out of git; regenerate with `--traces`.
+
 ### Model-family robustness (preliminary)
 
 Same protocol, same episodes: **Qwen2.5-3B 65-70% exact / 6.3 s** vs **Phi-3.5-mini 0% exact / 69.8 s, 60% no-diagnosis** — Phi keeps calling tools without committing to a diagnosis. Pending template/prompt-adaptation investigation before drawing conclusions; if it persists, cross-family protocol compliance is itself a benchmark dimension.
