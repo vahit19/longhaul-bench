@@ -80,6 +80,17 @@ def main() -> None:
         m["machine_id"]: [row for s in m["sections"] for row in s["rows"]]
         for m in world["manuals"]
     }
+    # valid (component, mode) pairs per machine — plausible-poison alternatives
+    import re as _re
+    plausible = {}
+    for mid, rows in manual_rows.items():
+        pairs = set()
+        for row in rows:
+            for cause in row["possible_causes"]:
+                m2 = _re.match(r"(.+) \((.+)\)", cause)
+                if m2:
+                    pairs.add((m2.group(1), m2.group(2)))
+        plausible[mid] = sorted(pairs)
 
     def oracle_context(ep: dict) -> str:
         gt = f"{ep['ground_truth']['component']} ({ep['ground_truth']['failure_mode']})"
@@ -112,7 +123,8 @@ def main() -> None:
                 traces_f.flush()
             symptoms = symptoms_of(ep, alarm_symptom)
             apply_operator(args.operator, store, ep["machine_id"], symptoms,
-                           ep["ground_truth"], rng, args.feedback_noise)
+                           ep["ground_truth"], rng, args.feedback_noise,
+                           alternatives=plausible.get(ep["machine_id"]))
             r.update({"episode_index": i, **store.stats(), "system_rss_mb": system_rss_mb()})
             results.append(r)
             f.write(json.dumps(r) + "\n")

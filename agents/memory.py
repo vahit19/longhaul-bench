@@ -104,19 +104,27 @@ class MemoryStore:
 
 
 def apply_operator(operator: str, store: MemoryStore, machine_id: str, symptoms: list,
-                   gt: dict, rng: random.Random, feedback_noise: float = 0.0) -> None:
+                   gt: dict, rng: random.Random, feedback_noise: float = 0.0,
+                   alternatives: list = None) -> None:
     """Update the knowledge state after an episode, per the chosen operator.
 
     Feedback models post-repair confirmation; with probability feedback_noise
-    the recorded outcome is corrupted (wrong component from the same machine's
-    plausible set) — the lever for corruption dose-response experiments.
+    the recorded outcome is corrupted. Two poison modes (dose-response lever):
+    - plausible (alternatives provided): swap to another VALID (component, mode)
+      of the same machine — the dangerous, realistic corruption.
+    - crude (no alternatives): nonsense label. Empirically harmless — the model
+      ignores blatant poison (kept as a documented negative control).
     """
     if operator == "frozen":
         return
 
     component, mode = gt["component"], gt["failure_mode"]
     if feedback_noise and rng.random() < feedback_noise:
-        component = component + "_misdiagnosed"  # deliberately corrupt record
+        others = [a for a in (alternatives or []) if tuple(a) != (component, mode)]
+        if others:
+            component, mode = rng.choice(others)
+        else:
+            component = component + "_misdiagnosed"
 
     if operator == "append":
         store.add(machine_id, symptoms, component, mode, merge=False)
