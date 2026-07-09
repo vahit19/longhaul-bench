@@ -115,7 +115,7 @@ Same protocol, same episodes: **Qwen2.5-3B 65-70% exact / 6.3 s** vs **Phi-3.5-m
 | Deterministic retrieval metrics (no judge) | ✅ implemented | `scripts/retrieval_metrics.py` — hit@5 / MRR vs oracle rows; 50-ep: keyword MRR 0.857, vector MRR 0.95 |
 | LangGraph comparison arm | ✅ implemented | `agents/langgraph_agent.py` — StateGraph, same protocol; 10-ep: 70% exact, p50 5.96s (no measurable overhead vs bare loop) |
 | DeepEval RAG metrics (local judge) | ✅ implemented | `scripts/rag_metrics.py` — contextual relevancy with the local SLM as judge; 5-case vector mode: 0.327 |
-| Qualcomm AI Hub integration | 🟡 client ready, untested | `scripts/aihub_profile.py` — device listing + profile-job submission; **blocked on a Qualcomm ID / API token (account-owner action)** |
+| Qualcomm AI Hub integration | ✅ authenticated & verified | `scripts/aihub_profile.py` — live device inventory confirmed, incl. **Dragonwing RB3 Gen 2 Vision Kit** (industrial IoT), QCS8550/8275 proxies, Snapdragon X Elite; first profile jobs → M5 |
 | Jetson measurements | 🔜 M5 | requires physical Jetson hardware |
 
 ## Deployment footprint (measured, not estimated)
