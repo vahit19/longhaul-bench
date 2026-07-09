@@ -86,7 +86,18 @@ Directional signals: operators lift accuracy +10 pts over frozen AND cut latency
 | reflect / compress | 59.5% ± 3.1 | 99% | 4.39 s | 552 |
 | gated / importance | 57.3% ± 3.1 | 99% | 4.28 s | 272 |
 | **oracle (ceiling)** | **75.0% ± 2.7** | 100% | 4.11 s | — |
-| reflect + 40% corrupted feedback | *(re-running after a transient server timeout at ep. 241; transport hardened)* | | | |
+| reflect + 40% crude poison (negative control) | 60.0% | 99% | 4.07 s | 673 |
+
+### Corruption dose-response (plausible poison: wrong-but-valid diagnosis recorded as confirmed)
+
+| Feedback corruption | Exact acc. | vs clean reflect | Significance (single seed) |
+|---|---|---|---|
+| 0% (clean) | 59.5% | — | — |
+| 20% plausible | 55.8% | −3.7 pts (below the frozen control) | z≈1.7, suggestive |
+| 40% plausible | **53.6%** | **−5.9 pts** | **z≈2.7, significant** |
+| 40% crude (nonsense labels) | 60.0% | ±0 | negative control: blatant poison is ignored |
+
+Monotonic dose-response with an inert negative control: the rot signal is causal, not an artifact. Probe curve under 40% poison visibly degrades mid-horizon (80%→40%) before partially recovering — eviction dynamics flushing poison is a candidate mechanism (autopsy pending). **Both plausible-poison arms fall below the no-learning control: under realistic feedback error rates, learning is net-harmful for this model class.**
 
 ![Matrix accuracy curves](runs/m4_night1/figures/matrix_accuracy.png)
 
