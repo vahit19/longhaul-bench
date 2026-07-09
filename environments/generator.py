@@ -144,6 +144,29 @@ FAILURE_MODES: dict[str, dict[str, dict] ] = {
     },
 }
 
+# Failure-mode categories mapped to UCI AI4I 2020 empirical failure shares
+# (HDF 31% thermal, OSF 26% overstrain/mechanical, PWF 25% power, TWF 12% wear,
+# RNF 5% random/sensor). Used when --calibrated is set (v1 dataset line).
+FAULT_CATEGORY: dict = {
+    ("electric_motor", "winding_fault"): "power",
+    ("electric_motor", "misalignment"): "mechanical",
+    ("servo_motor", "encoder_fault"): "power",
+    ("bearing", "wear"): "wear",
+    ("bearing", "lubrication_loss"): "thermal",
+    ("hydraulic_valve", "stiction"): "mechanical",
+    ("pneumatic_valve", "leak"): "mechanical",
+    ("pressure_sensor", "drift"): "random",
+    ("temperature_sensor", "drift"): "random",
+    ("speed_sensor", "intermittent"): "random",
+    ("proximity_sensor", "misadjustment"): "random",
+    ("filter", "clogging"): "thermal",
+    ("belt", "slippage"): "mechanical",
+    ("gearbox", "tooth_wear"): "wear",
+    ("spindle", "imbalance"): "mechanical",
+    ("coolant_pump", "cavitation"): "thermal",
+}
+CATEGORY_WEIGHTS: dict = {"thermal": 0.31, "mechanical": 0.26, "power": 0.25, "wear": 0.12, "random": 0.05}
+
 # Symptom -> alarm message text. Note deliberate ambiguity: several components
 # can raise the same symptom (e.g. temperature_high), so a correct diagnosis
 # requires consulting manuals/logs, not just the alarm table.
@@ -273,10 +296,15 @@ def _fill_log(template: str, rng: random.Random) -> str:
 
 
 def build_episode(rng: random.Random, i: int, machines: list[Machine], alarm_table: list[dict],
-                  log_dropout: float = 0.3, symptom_dropout: float = 0.3) -> Episode:
+                  log_dropout: float = 0.3, symptom_dropout: float = 0.3,
+                  calibrated: bool = False) -> Episode:
     m = rng.choice(machines)
-    component = rng.choice([c for c in m.components if FAILURE_MODES.get(c)])
-    mode_name = rng.choice(list(FAILURE_MODES[component]))
+    pairs = [(c, mn) for c in m.components for mn in FAILURE_MODES.get(c, {})]
+    if calibrated:  # AI4I-informed fault-frequency sampling (v1 dataset line)
+        weights = [CATEGORY_WEIGHTS[FAULT_CATEGORY[p]] for p in pairs]
+        component, mode_name = rng.choices(pairs, weights=weights)[0]
+    else:
+        component, mode_name = rng.choice(pairs)
     mode = FAILURE_MODES[component][mode_name]
 
     lookup = {(a["machine_id"], a["symptom"]): a for a in alarm_table}
@@ -331,6 +359,8 @@ def main() -> None:
                    help="probability that an episode has no detailed log (difficulty knob)")
     p.add_argument("--symptom-dropout", type=float, default=0.3,
                    help="probability that each true symptom alarm fails to fire (difficulty knob)")
+    p.add_argument("--calibrated", action="store_true",
+                   help="sample fault frequencies per UCI AI4I 2020 empirical shares (v1 datasets)")
     p.add_argument("--out", type=Path, default=Path("runs/demo"))
     args = p.parse_args()
 
@@ -344,7 +374,7 @@ def main() -> None:
         "manuals": [build_manual(m) for m in machines],
         "maintenance_history": [h for m in machines for h in build_maintenance_history(rng, m)],
     }
-    episodes = [build_episode(rng, i, machines, alarm_table, args.log_dropout, args.symptom_dropout) for i in range(args.episodes)]
+    episodes = [build_episode(rng, i, machines, alarm_table, args.log_dropout, args.symptom_dropout, args.calibrated) for i in range(args.episodes)]
 
     args.out.mkdir(parents=True, exist_ok=True)
     (args.out / "world.json").write_text(json.dumps(world, indent=2), encoding="utf-8")

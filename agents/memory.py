@@ -54,13 +54,17 @@ class MemoryStore:
         top = self.recall(machine_id, symptoms, k=1)
         return (top[0]["component"], top[0]["mode"]) if top else None
 
-    def render(self, cases: list) -> str:
+    def render(self, cases: list, label: str = "confirmed") -> str:
+        header = {
+            "confirmed": "Past confirmed cases for this machine:",
+            "unverified": "Past case notes for this machine (unverified, may contain errors):",
+        }[label]
         lines = [
             f"- symptoms {', '.join(e['symptoms'])} -> {e['component']} ({e['mode']}), "
             f"seen {e['count']}x"
             for e in cases
         ]
-        return "Past confirmed cases for this machine:\n" + "\n".join(lines)
+        return header + "\n" + "\n".join(lines)
 
     # ---- write ------------------------------------------------------------
     def add(self, machine_id: str, symptoms: list, component: str, mode: str, merge: bool = False) -> None:

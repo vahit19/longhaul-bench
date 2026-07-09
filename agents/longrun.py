@@ -64,6 +64,8 @@ def main() -> None:
                    help="upper bound: hand the agent the authoritative manual row")
     p.add_argument("--defense", choices=["none", "read", "write", "both"], default="none",
                    help="rot-mitigation baselines: manual-consistency gates on memory reads/writes")
+    p.add_argument("--memory-label", choices=["confirmed", "unverified"], default="confirmed",
+                   help="framing ablation: how memory context is presented to the model")
     p.add_argument("--traces", action="store_true",
                    help="dump full decision traces to traces.jsonl (knowledge-state autopsies)")
     p.add_argument("--out", type=Path, required=True)
@@ -120,7 +122,7 @@ def main() -> None:
                 cases = [c for c in cases
                          if consistent_with_manual(ep["machine_id"], symptoms, c["component"], c["mode"])]
             if cases:
-                ctx = store.render(cases)
+                ctx = store.render(cases, label=args.memory_label)
         r = run_episode(args.endpoint, world, ep, memory_context=ctx, include_trace=args.traces)
         r["memory_used"] = bool(ctx)
         return r

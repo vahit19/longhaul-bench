@@ -63,6 +63,10 @@ def main() -> None:
                "--traces", "--out", str(out)]
         if cfg.get("oracle"):
             cmd.append("--oracle")
+        if cfg.get("defense"):
+            cmd += ["--defense", cfg["defense"]]
+        if cfg.get("memory_label"):
+            cmd += ["--memory-label", cfg["memory_label"]]
         print(f"=== {tag} ===", flush=True)
         subprocess.run(cmd, cwd=REPO, check=True)
         s = json.loads((out / "summary.json").read_text(encoding="utf-8"))
