@@ -40,6 +40,7 @@ def main() -> None:
     p.add_argument("--name", required=True)
     p.add_argument("--limit", type=int, default=10)
     p.add_argument("--probe-every", type=int, default=0, help="0 = limit//2")
+    p.add_argument("--probe-size", type=int, default=5)
     p.add_argument("--seed", type=int, default=7)
     p.add_argument("--world", default="runs/v01/world.json")
     p.add_argument("--episodes", default="runs/v01/episodes.jsonl")
@@ -60,6 +61,7 @@ def main() -> None:
                "--feedback-noise", str(cfg.get("feedback_noise", 0.0)),
                "--limit", str(args.limit), "--seed", str(args.seed),
                "--probe-every", str(args.probe_every or max(args.limit // 2, 1)),
+               "--probe-size", str(args.probe_size),
                "--traces", "--out", str(out)]
         if cfg.get("oracle"):
             cmd.append("--oracle")
