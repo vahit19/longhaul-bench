@@ -97,7 +97,7 @@ Directional signals: operators lift accuracy +10 pts over frozen AND cut latency
 | 40% plausible | **53.6%** | **−5.9 pts** | **z≈2.7, significant** |
 | 40% crude (nonsense labels) | 60.0% | ±0 | negative control: blatant poison is ignored |
 
-Monotonic dose-response with an inert negative control: the rot signal is causal, not an artifact. Probe curve under 40% poison visibly degrades mid-horizon (80%→40%) before partially recovering — eviction dynamics flushing poison is a candidate mechanism (autopsy pending). **Both plausible-poison arms fall below the no-learning control: under realistic feedback error rates, learning is net-harmful for this model class.**
+Monotonic dose-response with an inert negative control. ~~Probe-curve drift narrative~~ struck per council review: the probe set is n=5 (0.2-quantized) and cannot support any drift claim — probe set expands to ≥50 in the remaining replication nights. Hedged headline: **both plausible-poison arms fall below the no-learning control on this environment for this 3B-class model** (single-seed; corruption-rate realism to be grounded in CMMS work-order literature or presented as a sensitivity sweep).
 
 ### Mitigation baselines — rot is cheaply preventable
 
@@ -108,7 +108,7 @@ Two LLM-free, mechanical gates (read-side: drop recalled cases that conflict wit
 | Undefended | 53.6% |
 | **Defended (both gates)** | **62.4%** (+8.8 pts, z≈4.0) |
 
-The defended-poisoned arm not only recovers the corruption damage — it exceeds the *clean* undefended arm (59.5%), because the read gate also filters naturally misleading recall (the 27.5%-collapse mechanism). Single-seed caveat applies; replication pending. Story arc: **learning helps conditionally → corrupts causally → and manual-consistency gating restores it at negligible cost.**
+**Claim status (updated after council review, 2026-07-10):** on world-42 the defended-poisoned arm (62.4%) exceeded even the clean undefended arm (59.5%), but world-43 REVERSED this ordering (clean 62.5% > defended 61.3%) — so the supportable claim is currently **"gates recover most of the corruption damage"**, not "defended beats clean"; final wording awaits 5-seed statistics. Two further caveats recorded in docs/COUNCIL_DECISION.md: the gate checks consistency against a manual that is complete-and-correct by construction (circularity risk — incomplete-manual arm planned), and its false-block rate on legitimate learning is not yet measured.
 
 ![Matrix accuracy curves](runs/m4_night1/figures/matrix_accuracy.png)
 
@@ -137,7 +137,7 @@ Same protocol, same episodes: **Qwen2.5-3B 65-70% exact / 6.3 s** vs **Phi-3.5-m
 | Deterministic retrieval metrics (no judge) | ✅ implemented | `scripts/retrieval_metrics.py` — hit@5 / MRR vs oracle rows; 50-ep: keyword MRR 0.857, vector MRR 0.95 |
 | LangGraph comparison arm | ✅ implemented | `agents/langgraph_agent.py` — StateGraph, same protocol; 10-ep: 70% exact, p50 5.96s (no measurable overhead vs bare loop) |
 | DeepEval RAG metrics (local judge) | ✅ implemented | `scripts/rag_metrics.py` — contextual relevancy with the local SLM as judge; 5-case vector mode: 0.327 |
-| Qualcomm AI Hub integration | ✅ authenticated & verified | `scripts/aihub_profile.py` — live device inventory confirmed, incl. **Dragonwing RB3 Gen 2 Vision Kit** (industrial IoT), QCS8550/8275 proxies, Snapdragon X Elite; first profile jobs → M5 |
+| Qualcomm AI Hub integration | 🟡 authenticated; profiling not yet successful | device inventory confirmed (incl. RB3 Gen 2); all profile jobs to date failed (conversion-path issues, diagnosed in docs/PAPER_PLAN.md §4b); next: model-zoo-recipe export |
 | Jetson measurements | future work | no Jetson hardware available; RB3 Gen 2 + Snapdragon via AI Hub cover the real-edge claim |
 
 ## Deployment footprint (measured, not estimated)
