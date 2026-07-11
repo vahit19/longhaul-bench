@@ -53,6 +53,11 @@ def main() -> None:
     for cfg in matrix:
         tag = cfg.get("tag") or cfg["operator"]
         out = base / tag
+        if (out / "summary.json").exists():  # resume support: skip completed arms
+            s = json.loads((out / "summary.json").read_text(encoding="utf-8"))
+            rows.append({"run": tag, **{c: s.get(c, "") for c in COLUMNS[1:]}})
+            print(f"=== {tag} (atlandi - tamam) ===", flush=True)
+            continue
         cmd = [sys.executable, str(REPO / "agents" / "longrun.py"),
                "--world", args.world, "--episodes", args.episodes,
                "--operator", cfg["operator"],
