@@ -1,0 +1,23 @@
+{
+  "memory_arm": "runs\\m4_night1\\append",
+  "frozen_arm": "runs\\m4_night1\\frozen",
+  "groups": {
+    "correct_hint": {
+      "n": 769,
+      "memory_arm_accuracy": 0.7087,
+      "frozen_matched_accuracy": 0.6151
+    },
+    "misleading_hint": {
+      "n": 218,
+      "memory_arm_accuracy": 0.2752,
+      "frozen_matched_accuracy": 0.4725
+    },
+    "no_memory": {
+      "n": 8,
+      "memory_arm_accuracy": 0.375,
+      "frozen_matched_accuracy": 0.375
+    }
+  },
+  "difficulty_share_of_gap": 0.329,
+  "memory_caused_delta_on_misleading": -0.1973
+}

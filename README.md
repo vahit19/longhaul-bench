@@ -113,7 +113,7 @@ Two LLM-free, mechanical gates (read-side: drop recalled cases that conflict wit
 ![Matrix accuracy curves](runs/m4_night1/figures/matrix_accuracy.png)
 
 **Headline findings (single seed — 5-seed replication pending):**
-1. **Memory is a double-edged sword.** Trace autopsies on the append arm: when recalled cases contain the correct diagnosis (769/987 episodes) accuracy is **70.9%** — near the oracle ceiling; when recall is misleading (218/987) it collapses to **27.5%**, far below the no-memory control. Net operator gains (+1–3 pts, within CI overlap) are the sum of these two large opposing effects; recall precision, not the improvement operator, is the binding lever.
+1. **Memory is a double-edged sword — now confound-controlled (scripts/autopsy.py, episode-matched).** The raw split (70.9% with correct recall vs 27.5% with misleading recall) partly reflects episode difficulty: the frozen control, evaluated on the SAME episode IDs, also drops (61.5% → 47.3%) on the misleading-recall set — difficulty explains ~33% of the raw gap. The paired comparison isolates the memory-caused effect: **+9.4 pts when recall is correct, −19.7 pts when it misleads** (same episodes, deterministic stream). Recall precision, not the improvement operator, remains the binding lever — now causally supported.
 2. **Latency benefit is robust:** all memory arms cut p50 latency ~25% (fewer tool calls when past cases are in context).
 3. **The memory budget binds hard:** append evicted 895/995 experiences under FIFO; reflect's compression cut evictions by 38%.
 4. **Headroom quantified:** best operator captures ~17% of the frozen→oracle gap (16.8 pts) — current test-time learning leaves most of the available reliability on the table.
