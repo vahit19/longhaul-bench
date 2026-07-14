@@ -77,7 +77,25 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 
 Directional signals: operators lift accuracy +10 pts over frozen AND cut latency ~20% (past cases → fewer tool calls). Most interesting: the **manual-oracle only reaches 70%** — on this world, retrieval is not the bottleneck; 3B-model reasoning is.
 
-### M4 night matrix — 995 episodes/arm on `longhaul-v0-standard` (single seed)
+### Final results — 5-seed (5 worlds), world-level inference
+
+Authoritative table. Per-arm mean over 5 independently generated worlds; contrasts by
+Mann-Whitney U with Holm correction across the confirmatory family (`scripts/final_stats.py`).
+
+| Arm | worlds | mean | 95% CI | | Contrast | Δ | Cliff's δ | Holm p |
+|---|---|---|---|---|---|---|---|---|
+| frozen (control) | 5 | 58.2% | [57.4, 58.8] | | append vs frozen (learning) | +3.8% | +1.00 | **0.048** |
+| append | 5 | 62.0% | [61.1, 63.5] | | oracle vs frozen (ceiling) | +18.6% | +1.00 | **0.048** |
+| reflect | 5 | 61.3% | [60.2, 62.2] | | noise0.4 vs reflect (rot) | −6.0% | −1.00 | **0.048** |
+| gated | 5 | 62.9% | [59.7, 65.3] | | defended vs noise0.4 (defense) | +6.0% | +1.00 | **0.048** |
+| oracle | 5 | 76.8% | [74.9, 78.9] | | noise0.2 vs reflect (low dose) | −2.3% | −0.76 | 0.111 n.s. |
+| noise0.4 (plausible) | 5 | 55.3% | [54.1, 56.5] | | framing vs reflect (null) | +1.4% | — | 0.111 ✓ |
+| defended0.4 | 5 | 61.3% | [60.6, 62.0] | | | | | |
+| framing-unverified | 4 | 62.7% | [61.6, 63.9] | | crude-poison control | 60.0% (1 world, inert) | | |
+
+All four headline contrasts show **complete rank separation across all 5 worlds** (Cliff's δ=±1.00) and clear Holm correction (all at the 5v5 floor, p=0.048 — borderline but consistent). Dose-dependence confirmed: 40% poison significant, 20% not. Framing label has no effect (null, as predicted). The pilot single-world table below (m4_night1, seed 42) is retained for reference only.
+
+### M4 night matrix — 995 episodes/arm on `longhaul-v0-standard` (single seed, PILOT)
 
 | Arm | Exact acc. (95% CI) | Memory hit | p50 latency | Evictions (budget 100) |
 |---|---|---|---|---|
