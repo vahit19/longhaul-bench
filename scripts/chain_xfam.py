@@ -3,10 +3,12 @@ for BOTH Qwen (8080) and Llama-3.2 (8082) under the SAME strict-vocab prompt,
 on 2 worlds. Shows whether learning/rot/defense DIRECTIONS replicate across
 model families under an identical prompt. LONGHAUL_STRICT_VOCAB set by launcher.
 """
+import os
 import subprocess
 import sys
 from pathlib import Path
 
+os.environ["LONGHAUL_STRICT_VOCAB"] = "1"  # guaranteed for all child subprocesses
 REPO = Path(__file__).resolve().parents[1]
 MODELS = [("qwen", "http://127.0.0.1:8080"), ("llama", "http://127.0.0.1:8082")]
 WORLDS = ["w45", "w46"]
