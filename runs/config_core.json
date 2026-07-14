@@ -1,0 +1,6 @@
+[
+  {"operator": "frozen", "tag": "frozen"},
+  {"operator": "reflect", "policy": "compress", "tag": "reflect"},
+  {"operator": "reflect", "policy": "compress", "feedback_noise": 0.4, "tag": "noise0.4"},
+  {"operator": "reflect", "policy": "compress", "feedback_noise": 0.4, "defense": "both", "tag": "defended0.4"}
+]

@@ -44,6 +44,18 @@ Rules: use tools before diagnosing; alarm_lookup decodes the active alarm codes;
 manual_search returns troubleshooting rows for this machine; component and
 failure_mode must be values seen in tool results (e.g. "bearing", "wear")."""
 
+# Optional strict-vocabulary clause (env LONGHAUL_STRICT_VOCAB=1). Default OFF so
+# the canonical Qwen results keep their exact prompt; used for the cross-family probe.
+import os as _os  # noqa: E402
+if _os.environ.get("LONGHAUL_STRICT_VOCAB") == "1":
+    SYSTEM_PROMPT += """
+
+CRITICAL: manual_search returns rows whose "possible_causes" look like
+"electric_motor (winding_fault)", "bearing (wear)". Your failure_mode MUST be
+copied EXACTLY from inside those parentheses (e.g. "winding_fault", not "wear"
+or "malfunction"), and component MUST be the name before the parenthesis. Never
+invent a mode word; only use ones that appear in a tool result for this machine."""
+
 
 class Tools:
     def __init__(self, world: dict, machine_id: str, alarms: list, retriever=None):
