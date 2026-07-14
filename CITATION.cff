@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use LongHaul-Bench, please cite it as below."
+title: "LongHaul-Bench: A Reproducible Benchmark for Long-Horizon Reliability of Self-Improving LLM Agents on Industrial Edge Hardware"
+authors:
+  - family-names: "Feryad"
+    given-names: "Vahit"
+    orcid: "https://orcid.org/0000-0002-3282-339X"
+    email: "vahit.feryat@gmail.com"
+    affiliation: "Independent Researcher, Istanbul, Türkiye"
+repository-code: "https://github.com/vahit19/longhaul-bench"
+license: MIT
+keywords:
+  - LLM agents
+  - long-horizon reliability
+  - edge AI
+  - industrial fault diagnosis
+  - self-improving agents
+  - benchmark
+preferred-citation:
+  type: article
+  title: "LongHaul-Bench: A Reproducible Benchmark for Long-Horizon Reliability of Self-Improving LLM Agents on Industrial Edge Hardware"
+  authors:
+    - family-names: "Feryad"
+      given-names: "Vahit"
+  year: 2026
+  notes: "Preprint forthcoming (arXiv); citation will be updated on publication."

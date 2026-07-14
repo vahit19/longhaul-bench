@@ -1,5 +1,9 @@
 # LongHaul-Bench: Long-Horizon Reliability of Industrial Edge Agents
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--3282--339X-A6CE39)](https://orcid.org/0000-0002-3282-339X) ![Episodes](https://img.shields.io/badge/episodes%20run-45%2C000%2B-blue) ![Worlds](https://img.shields.io/badge/replication-5%20worlds-success)
+
+**Author:** Vahit Feryad, PhD — Independent Researcher, Istanbul, Türkiye · [vahit.feryat@gmail.com](mailto:vahit.feryat@gmail.com) · Use GitHub's **"Cite this repository"** button (CITATION.cff) to cite.
+
 > **Research question:** Does an industrial diagnostic agent's knowledge state *improve* or *degrade* over 1000+ task iterations — and which improvement operators keep it reliable under edge-hardware constraints?
 
 **Status:** Design phase (v0). Author: Vahit Feryad, PhD.
