@@ -1,0 +1,38 @@
+{
+  "operator": "frozen",
+  "policy": "fifo",
+  "budget": 100,
+  "feedback_noise": 0.0,
+  "episodes": 945,
+  "exact_accuracy": 0.18941798941798943,
+  "memory_hit_rate": 0,
+  "final_memory": {
+    "entries": 0,
+    "bytes": 2,
+    "evictions": 0
+  },
+  "peak_system_rss_mb": 14026,
+  "latency_p50_s": 5.53,
+  "probe_curve": [
+    {
+      "after_episode": 200,
+      "probe_exact": 0.3
+    },
+    {
+      "after_episode": 400,
+      "probe_exact": 0.3
+    },
+    {
+      "after_episode": 600,
+      "probe_exact": 0.28
+    },
+    {
+      "after_episode": 800,
+      "probe_exact": 0.32
+    },
+    {
+      "after_episode": 945,
+      "probe_exact": 0.32
+    }
+  ]
+}

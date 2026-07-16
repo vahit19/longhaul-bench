@@ -1,0 +1,6 @@
+| run | operator | policy | budget | feedback_noise | episodes | exact_accuracy | memory_hit_rate | latency_p50_s | peak_system_rss_mb |
+|---|---|---|---|---|---|---|---|---|---|
+| frozen | frozen | fifo | 100 | 0.0 | 945 | 0.18941798941798943 | 0 | 5.53 | 14026 |
+| reflect | reflect | compress | 100 | 0.0 | 945 | 0.43492063492063493 | 0.9873015873015873 | 7.32 | 11486 |
+| noise0.4 | reflect | compress | 100 | 0.4 | 945 | 0.40634920634920635 | 0.9862433862433863 | 7.01 | 11498 |
+| defended0.4 | reflect | compress | 100 | 0.4 | 945 | 0.3693121693121693 | 0.9439153439153439 | 6.66 | 11510 |

@@ -1,0 +1,38 @@
+{
+  "operator": "reflect",
+  "policy": "compress",
+  "budget": 100,
+  "feedback_noise": 0.0,
+  "episodes": 945,
+  "exact_accuracy": 0.6021164021164022,
+  "memory_hit_rate": 0.9883597883597883,
+  "final_memory": {
+    "entries": 100,
+    "bytes": 14689,
+    "evictions": 515
+  },
+  "peak_system_rss_mb": 11702,
+  "latency_p50_s": 6.15,
+  "probe_curve": [
+    {
+      "after_episode": 200,
+      "probe_exact": 0.52
+    },
+    {
+      "after_episode": 400,
+      "probe_exact": 0.6
+    },
+    {
+      "after_episode": 600,
+      "probe_exact": 0.52
+    },
+    {
+      "after_episode": 800,
+      "probe_exact": 0.6
+    },
+    {
+      "after_episode": 945,
+      "probe_exact": 0.52
+    }
+  ]
+}
