@@ -31,6 +31,6 @@ COPY agents/ agents/
 COPY scripts/ scripts/
 COPY data/ data/
 
-# start the SLM server in the background, then run the given command
-ENTRYPOINT ["/bin/sh", "-c", "llama-server -m /models/qwen2.5-3b-instruct-q4_k_m.gguf --port 8080 -c 4096 & sleep 20 && exec \"$@\"", "--"]
+# start the SLM server, wait until it is actually healthy (slow CPUs load 2GB slowly), then run
+ENTRYPOINT ["/bin/sh", "-c", "llama-server -m /models/qwen2.5-3b-instruct-q4_k_m.gguf --port 8080 -c 4096 & i=0; until curl -sf http://127.0.0.1:8080/health >/dev/null 2>&1; do i=$((i+1)); [ $i -ge 60 ] && echo 'server failed to start' && exit 1; sleep 5; done; exec \"$@\"", "--"]
 CMD ["python", "agents/longrun.py", "--help"]

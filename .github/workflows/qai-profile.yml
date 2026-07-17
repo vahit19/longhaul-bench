@@ -22,14 +22,15 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install qai-hub-models
-        run: pip install --quiet qai-hub-models
+      - name: Install qai-hub-models with model extras
+        run: pip install --quiet "qai-hub-models[nomic-embed-text]" transformers
 
       - name: Configure AI Hub token
         run: qai-hub configure --api_token "${{ secrets.QAI_HUB_TOKEN }}"
 
       - name: Export + compile + profile on device
         run: |
+          set -o pipefail
           python -m qai_hub_models.models.${{ github.event.inputs.model }}.export \
             --device "${{ github.event.inputs.device }}" 2>&1 | tee profile_output.txt
 
