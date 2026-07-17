@@ -1,0 +1,4 @@
+run,operator,policy,budget,feedback_noise,episodes,exact_accuracy,memory_hit_rate,latency_p50_s,peak_system_rss_mb
+frozen,frozen,fifo,100,0.0,945,0.4793650793650794,0,6.12,5740
+reflect,reflect,compress,100,0.0,945,0.5693121693121693,0.9873015873015873,4.51,7598
+reflect-gated,reflect,compress,100,0.0,945,0.5121693121693122,0.8984126984126984,4.56,7262
