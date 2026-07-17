@@ -18,6 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
       - name: Install qai-hub-models
         run: pip install --quiet qai-hub-models
 

@@ -29,7 +29,7 @@ RUN pip install --no-cache-dir qdrant-client psutil
 COPY environments/ environments/
 COPY agents/ agents/
 COPY scripts/ scripts/
-COPY runs/v01/ runs/v01/
+COPY data/ data/
 
 # start the SLM server in the background, then run the given command
 ENTRYPOINT ["/bin/sh", "-c", "llama-server -m /models/qwen2.5-3b-instruct-q4_k_m.gguf --port 8080 -c 4096 & sleep 20 && exec \"$@\"", "--"]
