@@ -11,16 +11,17 @@
 
 FROM python:3.11-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl unzip \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 # llama.cpp server (Linux x64 CPU build, pinned release)
 ARG LLAMA_RELEASE=b9918
-RUN curl -sL -o /tmp/llama.zip \
-    "https://github.com/ggml-org/llama.cpp/releases/download/${LLAMA_RELEASE}/llama-${LLAMA_RELEASE}-bin-ubuntu-x64.zip" \
-    && unzip -q /tmp/llama.zip -d /opt/llama && rm /tmp/llama.zip \
-    && ln -s /opt/llama/build/bin/llama-server /usr/local/bin/llama-server || \
-       ln -s /opt/llama/llama-server /usr/local/bin/llama-server
+RUN curl -sL -o /tmp/llama.tgz \
+    "https://github.com/ggml-org/llama.cpp/releases/download/${LLAMA_RELEASE}/llama-${LLAMA_RELEASE}-bin-ubuntu-x64.tar.gz" \
+    && mkdir -p /opt/llama && tar -xzf /tmp/llama.tgz -C /opt/llama --strip-components=1 && rm /tmp/llama.tgz \
+    && SERVER=$(find /opt/llama -name llama-server -type f | head -1) \
+    && ln -s "$SERVER" /usr/local/bin/llama-server \
+    && LIBDIR=$(dirname "$SERVER") && echo "$LIBDIR" > /etc/ld.so.conf.d/llama.conf && ldconfig
 
 WORKDIR /app
 RUN pip install --no-cache-dir qdrant-client psutil

@@ -1,0 +1,56 @@
+name: capped-run
+# Resource-capped protocol validation in PUBLIC CI: the full agent loop runs
+# inside the 8GB/4CPU container on longhaul-v0-standard. The public log + the
+# uploaded results artifact are the paper's reproducibility evidence for the
+# capped-execution claim (council blocking item #6).
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "episodes to run"
+        default: "995"
+      operator:
+        description: "improvement operator"
+        default: "reflect"
+
+jobs:
+  capped:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download pinned model (Qwen2.5-3B-Instruct Q4_K_M)
+        run: |
+          mkdir -p models
+          curl -sL -o models/qwen2.5-3b-instruct-q4_k_m.gguf \
+            "https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/resolve/main/qwen2.5-3b-instruct-q4_k_m.gguf"
+          sha256sum models/*.gguf | tee model_hash.txt
+
+      - name: Build runtime image
+        run: docker build -t longhaul-bench .
+
+      - name: Run full arm inside the 8GB/4CPU cap
+        run: |
+          mkdir -p ci_out
+          docker run --memory=8g --cpus=4 \
+            -v ${{ github.workspace }}/models:/models \
+            -v ${{ github.workspace }}/ci_out:/app/runs/ci_capped \
+            longhaul-bench \
+            python agents/longrun.py \
+              --world data/longhaul-v0-standard/world.json \
+              --episodes data/longhaul-v0-standard/episodes.jsonl \
+              --operator ${{ github.event.inputs.operator }} --policy compress \
+              --limit ${{ github.event.inputs.limit }} \
+              --probe-every 200 --probe-size 50 \
+              --out runs/ci_capped
+
+      - name: Upload results (also on timeout/failure)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci-capped-results
+          path: |
+            ci_out/
+            model_hash.txt
