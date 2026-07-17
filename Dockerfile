@@ -11,7 +11,7 @@
 
 FROM python:3.11-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates \
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
 # llama.cpp server (Linux x64 CPU build, pinned release)
@@ -32,5 +32,5 @@ COPY scripts/ scripts/
 COPY data/ data/
 
 # start the SLM server, wait until it is actually healthy (slow CPUs load 2GB slowly), then run
-ENTRYPOINT ["/bin/sh", "-c", "llama-server -m /models/qwen2.5-3b-instruct-q4_k_m.gguf --port 8080 -c 4096 & i=0; until curl -sf http://127.0.0.1:8080/health >/dev/null 2>&1; do i=$((i+1)); [ $i -ge 60 ] && echo 'server failed to start' && exit 1; sleep 5; done; exec \"$@\"", "--"]
+ENTRYPOINT ["/bin/sh", "-c", "llama-server -m /models/qwen2.5-3b-instruct-q4_k_m.gguf --port 8080 -c 4096 > /tmp/server.log 2>&1 & i=0; until curl -sf http://127.0.0.1:8080/health >/dev/null 2>&1; do i=$((i+1)); if [ $i -ge 60 ]; then echo 'server failed to start; server.log:'; cat /tmp/server.log; exit 1; fi; sleep 5; done; exec \"$@\"", "--"]
 CMD ["python", "agents/longrun.py", "--help"]

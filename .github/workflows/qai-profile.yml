@@ -23,7 +23,7 @@ jobs:
           python-version: "3.11"
 
       - name: Install qai-hub-models with model extras
-        run: pip install --quiet "qai-hub-models[nomic-embed-text]" transformers
+        run: pip install --quiet "qai-hub-models[nomic-embed-text]" transformers scikit-learn sentencepiece datasets
 
       - name: Configure AI Hub token
         run: qai-hub configure --api_token "${{ secrets.QAI_HUB_TOKEN }}"
