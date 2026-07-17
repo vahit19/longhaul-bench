@@ -243,17 +243,29 @@ def _component_symptoms(component: str) -> set[str]:
     return {s for mode in FAILURE_MODES.get(component, {}).values() for s in mode["symptoms"]}
 
 
-def build_manual(m: Machine) -> dict:
+def build_manual(m: Machine, rng: random.Random = None, gap_rate: float = 0.0) -> dict:
     """Manual excerpt per machine: the RAG corpus. Troubleshooting rows map a
-    symptom to *all* components that can cause it — the agent must disambiguate."""
+    symptom to *all* components that can cause it — the agent must disambiguate.
+
+    gap_rate > 0 models INCOMPLETE manuals (the real-plant case): each
+    (component, mode) pair is silently omitted from the manual with that
+    probability, while still occurring as a real fault in episodes. Omitted
+    pairs are recorded in the world file for analysis (out-of-manual faults
+    are where experiential memory has non-redundant value, and where
+    consistency gates pay their false-block cost)."""
+    gaps: list = []
     cause_map: dict[str, list[str]] = {}
     for c in m.components:
         for mode_name, mode in FAILURE_MODES.get(c, {}).items():
+            if gap_rate and rng is not None and rng.random() < gap_rate:
+                gaps.append([c, mode_name])
+                continue
             for s in mode["symptoms"]:
                 cause_map.setdefault(s, []).append(f"{c} ({mode_name})")
     return {
         "machine_id": m.machine_id,
         "title": f"{m.machine_type.replace('_', ' ').title()} — Service Manual (excerpt)",
+        "manual_gaps": gaps,  # ground-truth record of omissions (hidden from agent tools)
         "sections": [
             {
                 "heading": "Troubleshooting",
@@ -361,6 +373,8 @@ def main() -> None:
                    help="probability that each true symptom alarm fails to fire (difficulty knob)")
     p.add_argument("--calibrated", action="store_true",
                    help="sample fault frequencies per UCI AI4I 2020 empirical shares (v1 datasets)")
+    p.add_argument("--manual-gap", type=float, default=0.0,
+                   help="probability each (component,mode) is omitted from the manual (incomplete-manual arm)")
     p.add_argument("--out", type=Path, default=Path("runs/demo"))
     args = p.parse_args()
 
@@ -371,7 +385,7 @@ def main() -> None:
         "seed": args.seed,
         "machines": [asdict(m) for m in machines],
         "alarm_table": alarm_table,
-        "manuals": [build_manual(m) for m in machines],
+        "manuals": [build_manual(m, rng, args.manual_gap) for m in machines],
         "maintenance_history": [h for m in machines for h in build_maintenance_history(rng, m)],
     }
     episodes = [build_episode(rng, i, machines, alarm_table, args.log_dropout, args.symptom_dropout, args.calibrated) for i in range(args.episodes)]

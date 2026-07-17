@@ -119,14 +119,17 @@ def main() -> None:
         elif use_memory:
             cases = store.recall(ep["machine_id"], symptoms)
             if args.defense in ("read", "both"):  # abstain-on-conflict
-                cases = [c for c in cases
-                         if consistent_with_manual(ep["machine_id"], symptoms, c["component"], c["mode"])]
+                kept = [c for c in cases
+                        if consistent_with_manual(ep["machine_id"], symptoms, c["component"], c["mode"])]
+                gate_stats["read_filtered"] += len(cases) - len(kept)
+                cases = kept
             if cases:
                 ctx = store.render(cases, label=args.memory_label)
         r = run_episode(args.endpoint, world, ep, memory_context=ctx, include_trace=args.traces)
         r["memory_used"] = bool(ctx)
         return r
 
+    gate_stats = {"write_rejections": 0, "read_filtered": 0}
     results, probe_curve = [], []
     traces_f = (args.out / "traces.jsonl").open("w", encoding="utf-8") if args.traces else None
     with (args.out / "results.jsonl").open("w", encoding="utf-8") as f:
@@ -139,7 +142,11 @@ def main() -> None:
             symptoms = symptoms_of(ep, alarm_symptom)
             validator = None
             if args.defense in ("write", "both"):
-                validator = lambda c, m, _mid=ep["machine_id"], _s=symptoms: consistent_with_manual(_mid, _s, c, m)
+                def validator(c, m, _mid=ep["machine_id"], _s=symptoms):
+                    ok = consistent_with_manual(_mid, _s, c, m)
+                    if not ok:
+                        gate_stats["write_rejections"] += 1
+                    return ok
             apply_operator(args.operator, store, ep["machine_id"], symptoms,
                            ep["ground_truth"], rng, args.feedback_noise,
                            alternatives=plausible.get(ep["machine_id"]), validator=validator)
@@ -161,6 +168,7 @@ def main() -> None:
         "exact_accuracy": statistics.mean(r["exact_correct"] for r in results),
         "memory_hit_rate": statistics.mean(r["memory_used"] for r in results),
         "final_memory": store.stats(),
+        "gate_stats": gate_stats,
         "peak_system_rss_mb": max(r["system_rss_mb"] for r in results),
         "latency_p50_s": statistics.median(r["latency_s"] for r in results),
         "probe_curve": probe_curve,

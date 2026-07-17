@@ -1,0 +1,5 @@
+[
+  {"operator": "frozen", "tag": "frozen"},
+  {"operator": "reflect", "policy": "compress", "tag": "reflect"},
+  {"operator": "reflect", "policy": "compress", "defense": "both", "tag": "reflect-gated"}
+]
