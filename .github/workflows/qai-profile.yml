@@ -1,0 +1,37 @@
+name: qai-profile
+# M5 device measurement via Qualcomm-validated model-zoo export, run in CI
+# (local torch is broken on the Windows dev machine). Profiles OUR retrieval
+# encoder (nomic-embed-text) on the Dragonwing RB3 Gen 2 industrial kit.
+
+on:
+  workflow_dispatch:
+    inputs:
+      model:
+        description: "qai_hub_models zoo model"
+        default: "nomic_embed_text"
+      device:
+        description: "target device"
+        default: "Dragonwing RB3 Gen 2 Vision Kit"
+
+jobs:
+  profile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Install qai-hub-models
+        run: pip install --quiet qai-hub-models
+
+      - name: Configure AI Hub token
+        run: qai-hub configure --api_token "${{ secrets.QAI_HUB_TOKEN }}"
+
+      - name: Export + compile + profile on device
+        run: |
+          python -m qai_hub_models.models.${{ github.event.inputs.model }}.export \
+            --device "${{ github.event.inputs.device }}" 2>&1 | tee profile_output.txt
+
+      - name: Upload profile output
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qai-profile-${{ github.event.inputs.model }}
+          path: profile_output.txt
