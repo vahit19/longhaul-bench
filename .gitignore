@@ -11,3 +11,4 @@ logs/
 runs/sweep_*/
 local/
 runs/**/traces.jsonl
+paper/
