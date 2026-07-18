@@ -11,16 +11,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compile LaTeX
+      - name: Compile both versions (anonymous + named preprint)
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: main.tex
+          root_file: |
+            main.tex
+            main-preprint.tex
           working_directory: paper
           latexmk_use_lualatex: false
 
-      - name: Upload PDF
+      - name: Upload PDFs
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: longhaul-paper-pdf
-          path: paper/main.pdf
+          path: |
+            paper/main.pdf
+            paper/main-preprint.pdf
