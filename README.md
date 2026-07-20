@@ -130,7 +130,7 @@ Two LLM-free, mechanical gates (read-side: drop recalled cases that conflict wit
 | Undefended | 53.6% |
 | **Defended (both gates)** | **62.4%** (+8.8 pts, z≈4.0) |
 
-**Claim status (updated after council review, 2026-07-10):** on world-42 the defended-poisoned arm (62.4%) exceeded even the clean undefended arm (59.5%), but world-43 REVERSED this ordering (clean 62.5% > defended 61.3%) — so the supportable claim is currently **"gates recover most of the corruption damage"**, not "defended beats clean"; final wording awaits 5-seed statistics. Two further caveats recorded in docs/COUNCIL_DECISION.md: the gate checks consistency against a manual that is complete-and-correct by construction (circularity risk — incomplete-manual arm planned), and its false-block rate on legitimate learning is not yet measured.
+**Claim status (updated after council review, 2026-07-10):** on world-42 the defended-poisoned arm (62.4%) exceeded even the clean undefended arm (59.5%), but world-43 REVERSED this ordering (clean 62.5% > defended 61.3%) — so the supportable claim is currently **"gates recover most of the corruption damage"**, not "defended beats clean"; final wording awaits 5-seed statistics. Two further caveats: the gate checks consistency against a manual that is complete-and-correct by construction (circularity risk — addressed by the incomplete-manual arm), and its false-block rate on legitimate learning is measured (see `runs/gap_study`).
 
 ![Matrix accuracy curves](runs/m4_night1/figures/matrix_accuracy.png)
 
@@ -159,7 +159,7 @@ Same protocol, same episodes: **Qwen2.5-3B 65-70% exact / 6.3 s** vs **Phi-3.5-m
 | Deterministic retrieval metrics (no judge) | ✅ implemented | `scripts/retrieval_metrics.py` — hit@5 / MRR vs oracle rows; 50-ep: keyword MRR 0.857, vector MRR 0.95 |
 | LangGraph comparison arm | ✅ implemented | `agents/langgraph_agent.py` — StateGraph, same protocol; 10-ep: 70% exact, p50 5.96s (no measurable overhead vs bare loop) |
 | DeepEval RAG metrics (local judge) | ✅ implemented | `scripts/rag_metrics.py` — contextual relevancy with the local SLM as judge; 5-case vector mode: 0.327 |
-| Qualcomm AI Hub integration | 🟡 authenticated; profiling not yet successful | device inventory confirmed (incl. RB3 Gen 2); all profile jobs to date failed (conversion-path issues, diagnosed in docs/PAPER_PLAN.md §4b); next: model-zoo-recipe export |
+| Qualcomm AI Hub integration | 🟡 authenticated; profiling not yet successful | device inventory confirmed (incl. RB3 Gen 2); all profile jobs to date failed (model-conversion-path issues); deferred to future work |
 | Jetson measurements | future work | no Jetson hardware available; RB3 Gen 2 + Snapdragon via AI Hub cover the real-edge claim |
 
 ## Deployment footprint (measured, not estimated)
@@ -216,7 +216,7 @@ Outputs `world.json` (machines, alarm-code table, manual excerpts for RAG, maint
 | standard | 0.3 | 0.3 | 86.3% |
 | hard | 0.7 | 0.5 | 73.3% |
 
-Further hardening (multi-fault episodes, overlapping log vocabulary) is tracked in `docs/PAPER_PLAN.md` M1.
+Further hardening (multi-fault episodes, overlapping log vocabulary) is future work.
 
 ## Repository layout
 
