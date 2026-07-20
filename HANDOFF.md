@@ -27,8 +27,8 @@ experience-memory budget, offline). A paper based on this work is under submissi
 - `data/longhaul-v0-standard|hard` — canonical datasets (seed 42); `longhaul-v1-standard` = AI4I-calibrated
 - `runs/m4_night1, repl_w43..w46` — 5-world replication (9 arms each); `xfam_*` — cross-family; `gap_study` — incomplete-manual; `runs/ci_capped` — capped-container reproduction
 - `scripts/final_stats.py` — THE stats (world-level MWU+Holm, arm-name reconciliation inside); `autopsy.py` — matched mechanism analysis; `footprint.py` — per-process RSS
-- `docs/PAPER_PLAN.md`, `docs/RELATED_WORK.md`, `docs/COUNCIL_DECISION.md` — planning/positioning/review notes
-- `.github/workflows/` — `capped-run.yml` (8GB/4CPU full arm in public CI), `qai-profile.yml`, `paper-build.yml`
+- `docs/paper/final_stats/` — the statistics tables; `autopsy_matched.json` — matched-mechanism output
+- `.github/workflows/` — `capped-run.yml` (8GB/4CPU full arm in public CI), `qai-profile.yml`
 
 ## Council blocking scoreboard
 
