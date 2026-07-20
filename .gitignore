@@ -13,3 +13,7 @@ local/
 runs/**/traces.jsonl
 paper/
 HANDOFF-private.md
+docs/PAPER_PLAN.md
+docs/paper/DRAFT.md
+docs/COUNCIL_DECISION.md
+docs/RELATED_WORK.md
