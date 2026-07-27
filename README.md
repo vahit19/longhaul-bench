@@ -6,7 +6,7 @@
 
 > **Research question:** Does an industrial diagnostic agent's knowledge state *improve* or *degrade* over 1000+ task iterations — and which improvement operators keep it reliable under edge-hardware constraints?
 
-**Status:** Design phase (v0). Author: Vahit Feryad, PhD.
+**Status:** Experimental program complete (v0.1.x) — five-world replication, cross-family study, and defense analysis done; technical report in submission. Author: Vahit Feryad, PhD.
 
 ## Why this benchmark exists
 
@@ -180,10 +180,10 @@ Device-class verdict (3B Q4 stack): **8 GB class** (Raspberry Pi 5, Jetson Orin 
 
 ## Roadmap
 
-- [ ] v0.1 — environment generator + frozen-agent baseline, 1000-episode run on CPU
-- [ ] v0.2 — operators (1)–(3), comparison report
-- [ ] v0.3 — Jetson + Qualcomm AI Hub measurements, quantization ablation (4-bit vs 8-bit)
-- [ ] Report — arXiv technical report + blog series
+- [x] v0.1 — environment generator + frozen-agent baseline, ~1000-episode runs on CPU
+- [x] v0.2 — improvement operators, five-world replication, corruption dose-response, defense analysis, cross-family study
+- [ ] v0.3 — on-device measurements (toolchain attempts documented; deferred) and quantization ablation (4-bit vs 8-bit)
+- [x] Report — technical report submitted (preprint in moderation); blog series pending
 
 ## Architecture
 
@@ -193,7 +193,7 @@ flowchart LR
     G -->|episodes.jsonl| A[Diagnostic agent<br/>quantized SLM, llama.cpp]
     A <-->|one JSON action per turn| T
     A -->|experience| M[Memory / knowledge state]
-    M -->|improvement operators<br/>append / reflect / metric-gated| A
+    M -->|improvement operators<br/>append / reflect / gated| A
     A -->|diagnosis| S[Scorer vs hidden ground truth]
     S --> R[Reliability metrics<br/>accuracy curve · corruption · drift<br/>latency · RAM · anomaly rate]
 ```

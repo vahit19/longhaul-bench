@@ -36,3 +36,25 @@ jobs:
         run: |
           python scripts/final_stats.py --out /tmp/stats
           diff /tmp/stats/main_table.md docs/paper/final_stats/main_table.md
+
+      - name: Per-arm consistency (results.jsonl vs summary.json)
+        run: |
+          python - << 'EOF'
+          import json, pathlib, sys
+          bad, checked = [], 0
+          for s in pathlib.Path("runs").rglob("summary.json"):
+              r = s.parent / "results.jsonl"
+              if not r.exists():
+                  continue
+              rows = [json.loads(l) for l in r.open(encoding="utf-8")]
+              summ = json.loads(s.read_text(encoding="utf-8"))
+              if not rows or "exact_accuracy" not in summ or summ["exact_accuracy"] is None:
+                  continue
+              acc = sum(x.get("exact_correct", False) for x in rows) / len(rows)
+              checked += 1
+              if summ.get("episodes") != len(rows) or abs(acc - summ["exact_accuracy"]) > 1e-9:
+                  bad.append(f"{s.parent}: rows={len(rows)} acc={acc:.4f} vs summary={summ.get('episodes')}/{summ['exact_accuracy']:.4f}")
+          print(f"checked {checked} arms")
+          if bad:
+              print("\n".join(bad)); sys.exit(1)
+          EOF

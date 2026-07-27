@@ -24,7 +24,7 @@ RUN curl -sL -o /tmp/llama.tgz \
     && LIBDIR=$(dirname "$SERVER") && echo "$LIBDIR" > /etc/ld.so.conf.d/llama.conf && ldconfig
 
 WORKDIR /app
-RUN pip install --no-cache-dir qdrant-client psutil
+RUN pip install --no-cache-dir qdrant-client==1.18.0 psutil==7.2.2
 
 COPY environments/ environments/
 COPY agents/ agents/
