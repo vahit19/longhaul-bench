@@ -1,0 +1,9 @@
+{
+  "episodes": 995,
+  "exact_accuracy": 0.6110552763819096,
+  "component_accuracy": 0.6924623115577889,
+  "memory_hit_rate": 0.9879396984924623,
+  "no_diagnosis_rate": 0.0,
+  "reconstructed_from_traces": true,
+  "note": "results rebuilt from raw traces; runtime fields (latency/tokens) not derivable and omitted"
+}
