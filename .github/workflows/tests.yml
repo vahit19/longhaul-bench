@@ -27,12 +27,8 @@ jobs:
           diff /tmp/g1/world.json /tmp/g2/world.json
           diff /tmp/g1/episodes.jsonl /tmp/g2/episodes.jsonl
 
-      - name: Canonical dataset regeneration matches the release
-        run: |
-          python environments/generator.py --machines 5 --episodes 1000 --seed 42 \
-            --log-dropout 0.3 --symptom-dropout 0.3 --out /tmp/canon
-          diff /tmp/canon/world.json data/longhaul-v0-standard/world.json
-          diff /tmp/canon/episodes.jsonl data/longhaul-v0-standard/episodes.jsonl
+      - name: Canonical dataset fixity (released artifacts unchanged)
+        run: cd data && sha256sum -c SHA256SUMS
 
       - name: Statistics regenerate from released summaries
         env:

@@ -22,3 +22,11 @@ python environments/generator.py --machines 5 --episodes 1000 --seed 42 \
 Versioning policy: any change to the generator that alters outputs bumps the
 release name (v0 → v1); old releases stay for comparability. A Hugging Face
 Datasets mirror is planned alongside the arXiv preprint.
+
+Provenance note: the v0 releases are FROZEN artifacts produced by the generator
+revision current at release time. A later generator refactor (adding the
+`--calibrated` fault-frequency option) changed random-stream consumption, so
+regenerating v0 byte-identically requires checking out the pre-refactor
+revision; with the current generator, per-seed determinism still holds (CI-tested)
+but yields a different stream. Integrity of the released files is verified in CI
+against `data/SHA256SUMS`.
