@@ -34,8 +34,8 @@ Over N ≥ 1000 sequential diagnostic episodes in a synthetic industrial environ
 ## Compared improvement operators
 
 1. **Append-only memory** (naive baseline) — every episode's summary is stored.
-2. **Reflection → structured experience** (MUSE-style) — trajectories distilled into typed records before integration.
-3. **Metric-driven optimization** (DSPy/GEPA-style) — operators updated only when a held-out eval improves.
+2. **Reflect** — duplicate experiences are merged into counted rules (a deliberately simple, deterministic distillation; richer LLM-driven reflection à la MUSE is future work).
+3. **Gated** — error-driven writes: an experience is stored only when the current memory mispredicts the episode (a simple gate, not a DSPy/GEPA-style optimizer; that comparison is future work).
 4. **Frozen agent** (control) — no learning; isolates environment drift from agent drift.
 
 ## Data sources & provenance
@@ -154,7 +154,7 @@ Same protocol, same episodes: **Qwen2.5-3B 65-70% exact / 6.3 s** vs **Phi-3.5-m
 | Quantized SLM runtime (llama.cpp) | ✅ implemented | M2 smoke run, results above |
 | Agentic retrieval — keyword & vector modes | ✅ implemented | `manual_search` tool; `LONGHAUL_RETRIEVAL=vector` switches modes (ablation axis) |
 | Vector DB (Qdrant, serverless local) + embedding RAG | ✅ implemented | `environments/retrieval.py` — nomic-embed-text via llama.cpp `--embeddings`, no torch/cloud; preliminary 10-ep: vector 50% vs keyword 70% (CIs overlap; full comparison in M4) |
-| Inspect AI harness | ✅ implemented | `evals/longhaul_task.py` — dataset/solver/scorer, standard Inspect logs; 10-ep validation: 70% ± 15.3% |
+| Inspect AI harness | ✅ implemented (single-episode scope) | `evals/longhaul_task.py` — dataset/solver/scorer, standard Inspect logs; 10-ep validation: 70% ± 15.3%. Note: the long-horizon memory loop runs in the custom sequential driver (`agents/longrun.py`) by design — stateful cross-episode memory does not fit Inspect's parallel sample model |
 | Improvement operators + memory budget | ✅ implemented | `agents/memory.py` + `agents/longrun.py` — 4 operators × 3 forgetting policies, feedback-noise knob, frozen probes, psutil RSS tracking; 10-ep smoke (reflect/compress): 70% exact, memory hit-rate 50%, probe stable at 80%, p50 4.3s |
 | Deterministic retrieval metrics (no judge) | ✅ implemented | `scripts/retrieval_metrics.py` — hit@5 / MRR vs oracle rows; 50-ep: keyword MRR 0.857, vector MRR 0.95 |
 | LangGraph comparison arm | ✅ implemented | `agents/langgraph_agent.py` — StateGraph, same protocol; 10-ep: 70% exact, p50 5.96s (no measurable overhead vs bare loop) |

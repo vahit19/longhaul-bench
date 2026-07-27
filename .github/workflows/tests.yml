@@ -1,0 +1,42 @@
+name: tests
+# Automated integrity tests: (1) the world generator is byte-deterministic per
+# seed; (2) world-level statistics regenerate exactly from the released run
+# summaries, matching the archived main table.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Generator determinism (same seed -> byte-identical world)
+        run: |
+          python environments/generator.py --machines 5 --episodes 200 --seed 42 --out /tmp/g1
+          python environments/generator.py --machines 5 --episodes 200 --seed 42 --out /tmp/g2
+          diff /tmp/g1/world.json /tmp/g2/world.json
+          diff /tmp/g1/episodes.jsonl /tmp/g2/episodes.jsonl
+
+      - name: Canonical dataset regeneration matches the release
+        run: |
+          python environments/generator.py --machines 5 --episodes 1000 --seed 42 \
+            --log-dropout 0.3 --symptom-dropout 0.3 --out /tmp/canon
+          diff /tmp/canon/world.json data/longhaul-v0-standard/world.json
+          diff /tmp/canon/episodes.jsonl data/longhaul-v0-standard/episodes.jsonl
+
+      - name: Statistics regenerate from released summaries
+        env:
+          PYTHONUTF8: "1"
+        run: |
+          python scripts/final_stats.py --out /tmp/stats
+          diff /tmp/stats/main_table.md docs/paper/final_stats/main_table.md
