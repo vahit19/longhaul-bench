@@ -18,9 +18,14 @@ keywords:
   - benchmark
 preferred-citation:
   type: article
-  title: "LongHaul-Bench: A Reproducible Benchmark for Long-Horizon Reliability of Self-Improving LLM Agents on Industrial Edge Hardware"
+  title: "LongHaul-Bench: A Reproducible Benchmark for Long-Horizon Reliability of Self-Improving LLM Agents Under Industrial Edge Constraints"
   authors:
     - family-names: "Feryad"
       given-names: "Vahit"
+      orcid: "https://orcid.org/0000-0002-3282-339X"
   year: 2026
-  notes: "Preprint forthcoming (arXiv); citation will be updated on publication."
+  publisher:
+    name: "Zenodo"
+  doi: "10.5281/zenodo.23624799"
+  url: "https://doi.org/10.5281/zenodo.23624799"
+  notes: "Preprint."
