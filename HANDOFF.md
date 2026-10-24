@@ -16,7 +16,7 @@ experience-memory budget, offline). A paper based on this work is under submissi
 | Learning lifts accuracy (+3.8% over frozen) | 5 worlds, Cliff's δ=+1.00, Holm p=.048 | significant |
 | Plausible corruption → rot (−6.0%) | 5 worlds, dose-dependent (20% n.s.) | significant |
 | Consistency gates recover damage (+6.0%) | 5 worlds; NOT "beats clean" (w43/44 reversed) | significant |
-| Mechanism: memory ±paired effect | +9.4 correct-recall / −19.8 misleading, episode-matched vs frozen (`scripts/autopsy.py`) | confound-controlled |
+| Mechanism: memory ±paired effect | +9.4 correct-recall / −19.7 misleading, episode-matched vs frozen (`scripts/autopsy.py`) | confound-controlled |
 | Memory value ∝ 1/capability | Llama-3.2 reflect +28 vs Qwen +2.3; defense neutral/harmful on weak model | 2 worlds |
 | Incomplete manual → memory shines | gap world: frozen 47.9% vs reflect 56.9% (+9); gates cut to +3.3 | gap_study |
 | Crude poison inert (negative control) | 60.0% ≈ clean | 1 world |
