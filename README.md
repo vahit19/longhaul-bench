@@ -6,7 +6,7 @@
 
 > **Research question:** Does an industrial diagnostic agent's knowledge state *improve* or *degrade* over 1000+ task iterations — and which improvement operators keep it reliable under edge-hardware constraints?
 
-**Status:** Experimental program complete (v0.1.x) — five-world replication, cross-family study, and defense analysis done; technical report in submission. Author: Vahit Feryad, PhD.
+**Status:** Experimental program complete (v0.1.x) — five-world replication, cross-family study, defense analysis, and recall-precision mechanism analysis done; technical report complete. Author: Vahit Feryad, PhD.
 
 ## Why this benchmark exists
 
@@ -99,6 +99,20 @@ Mann-Whitney U with Holm correction across the confirmatory family (`scripts/fin
 
 All four headline contrasts show **complete rank separation across all 5 worlds** (Cliff's δ=±1.00) and clear Holm correction (all at the 5v5 floor, p=0.048 — borderline but consistent). Dose-dependence confirmed: 40% poison significant, 20% not. Framing label has no effect (null, as predicted). The pilot single-world table below (m4_night1, seed 42) is retained for reference only.
 
+### Mechanism — recall precision (analysis of released traces, no re-runs)
+
+`scripts/recall_precision.py` splits every memory-bearing episode by whether the recalled past cases contain the correct diagnosis, and compares each memory arm with the frozen arm on the **same episode IDs**. The paired accuracy difference decomposes exactly into recall precision π, the gain on a correct recall Δ⁺, and the loss on a misleading recall Δ⁻; memory helps only when π exceeds the break-even π\* = |Δ⁻| / (Δ⁺ + |Δ⁻|).
+
+| Arm (5-world mean) | π | Δ⁺ (pts) | Δ⁻ (pts) | π\* | paired Δ vs frozen |
+|---|---|---|---|---|---|
+| reflect (clean) | 0.805 | +8.9 | −20.6 | 0.69 | +3.1 |
+| noise0.2 (plausible) | 0.721 | +8.9 | −19.9 | 0.69 | +0.9 |
+| noise0.4 (plausible) | 0.654 | +6.7 | −21.2 | 0.76 | −2.9 |
+| defended0.4 | 0.780 | +10.3 | −21.1 | 0.67 | +3.1 |
+| crude0.4 (1 world) | 0.570 | +10.8 | −10.1 | 0.48 | +1.8 |
+
+Plausible corruption lowers precision (ordered clean > 20% > 40% in every world) while the cost of a misleading recall stays fixed; the precision drop alone predicts 2.5 of the observed 2.3 points of rot at 20% and 4.4 of 6.0 at 40%. Using clean-arm Δ⁺/Δ⁻ and only the target arm's π predicts the noise/defended arms with 1.4-point mean absolute error (r = 0.79, 13/15 signs). Gates work by restoring precision; crude poison is inert because it halves Δ⁻. Full per-world output: `docs/paper/recall_precision.json`.
+
 ### M4 night matrix — 995 episodes/arm on `longhaul-v0-standard` (single seed, PILOT)
 
 | Arm | Exact acc. (95% CI) | Memory hit | p50 latency | Evictions (budget 100) |
@@ -183,7 +197,7 @@ Device-class verdict (3B Q4 stack): **8 GB class** (Raspberry Pi 5, Jetson Orin 
 - [x] v0.1 — environment generator + frozen-agent baseline, ~1000-episode runs on CPU
 - [x] v0.2 — improvement operators, five-world replication, corruption dose-response, defense analysis, cross-family study
 - [ ] v0.3 — on-device measurements (toolchain attempts documented; deferred) and quantization ablation (4-bit vs 8-bit)
-- [x] Report — technical report submitted (preprint in moderation); blog series pending
+- [x] Report — technical report complete; blog series pending
 
 ## Architecture
 
