@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE) [![ORCID](https://img.shields.io/badge/ORCID-0000--0002--3282--339X-A6CE39)](https://orcid.org/0000-0002-3282-339X) ![Episodes](https://img.shields.io/badge/episodes%20run-45%2C000%2B-blue) ![Worlds](https://img.shields.io/badge/replication-5%20worlds-success) [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.23624799-blue)](https://doi.org/10.5281/zenodo.23624799)
 
-**Preprint:** V. Feryad, *LongHaul-Bench: A Reproducible Benchmark for Long-Horizon Reliability of Self-Improving LLM Agents Under Industrial Edge Constraints*, Zenodo, 2026. [doi:10.5281/zenodo.23624799](https://doi.org/10.5281/zenodo.23624799)
+**Preprint:** V. Feryad, *LongHaul-Bench: A Reproducible Benchmark for Long-Horizon Reliability of Self-Improving LLM Agents Under Industrial Edge Constraints*, Zenodo, 2026. [doi:10.5281/zenodo.23624799](https://doi.org/10.5281/zenodo.23624799) · **Dataset:** [huggingface.co/datasets/renderfy/longhaul-bench](https://huggingface.co/datasets/renderfy/longhaul-bench)
 
 **Author:** Vahit Feryad, PhD — Independent Researcher, Istanbul, Türkiye · [vahit.feryat@gmail.com](mailto:vahit.feryat@gmail.com) · Use GitHub's **"Cite this repository"** button (CITATION.cff) to cite.
 

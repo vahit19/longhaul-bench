@@ -21,7 +21,7 @@ python environments/generator.py --machines 5 --episodes 1000 --seed 42 \
 
 Versioning policy: any change to the generator that alters outputs bumps the
 release name (v0 → v1); old releases stay for comparability. A Hugging Face
-Datasets mirror is planned alongside the arXiv preprint.
+Datasets mirror is available at https://huggingface.co/datasets/renderfy/longhaul-bench.
 
 Provenance note: the v0 releases are FROZEN artifacts produced by the generator
 revision current at release time. A later generator refactor (adding the
