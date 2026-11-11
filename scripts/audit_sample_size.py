@@ -22,13 +22,21 @@ import math
 import random
 from pathlib import Path
 
-from scipy.stats import binom
+from scipy.stats import binom, norm
 
 REPO = Path(__file__).resolve().parents[1]
 
 
 def hoeffding_n(gamma: float, alpha: float) -> int:
     return math.ceil(2 * math.log(1 / alpha) / gamma ** 2)
+
+
+def gauss_n(pi_star: float, gamma: float, alpha: float) -> int:
+    """Normal (CLT) approximation with the optimal threshold between pi_star and pi_star - gamma."""
+    z = norm.ppf(1 - alpha)
+    s0 = math.sqrt(pi_star * (1 - pi_star))
+    s1 = math.sqrt((pi_star - gamma) * (1 - pi_star + gamma))
+    return math.ceil((z * (s0 + s1) / gamma) ** 2)
 
 
 def exact_n(pi_star: float, gamma: float, alpha: float, n_max: int = 5000):
@@ -58,7 +66,7 @@ def main() -> None:
         for alpha in (0.05, 0.10):
             n_ex, k = exact_n(pi_star, gamma, alpha)
             rows.append({"accuracy_loss_points": 100 * acc_loss, "gamma": gamma, "alpha": alpha,
-                         "n_hoeffding": hoeffding_n(gamma, alpha), "n_exact": n_ex, "flag_if_correct_at_most": k})
+                         "n_hoeffding": hoeffding_n(gamma, alpha), "n_gauss": gauss_n(pi_star, gamma, alpha), "n_exact": n_ex, "flag_if_correct_at_most": k})
 
     # empirical check: resample audits from real per-episode recall labels (clean vs 40% corruption)
     rng = random.Random(0)
@@ -78,7 +86,7 @@ def main() -> None:
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     if args.latex:
-        lines = [f"{r['accuracy_loss_points']:.0f} & {r['gamma']:.3f} & {r['alpha']:.2f} & {r['n_hoeffding']} & "
+        lines = [f"{r['accuracy_loss_points']:.0f} & {r['gamma']:.3f} & {r['alpha']:.2f} & {r['n_hoeffding']} & {r['n_gauss']} & "
                  f"{r['n_exact']} & {r['flag_if_correct_at_most']} \\\\" for r in rows]
         args.latex.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print("pi* =", round(pi_star, 3), "slope =", round(slope, 3))

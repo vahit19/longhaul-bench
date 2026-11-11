@@ -25,13 +25,13 @@ LABELS = {"noise0.2": "20% corruption", "noise0.4": "40% corruption", "defended0
 
 def main() -> None:
     p = argparse.ArgumentParser()
-    p.add_argument("--out", type=Path, default=REPO / "paper" / "isa" / "figures" / "Figure_2.pdf")
+    p.add_argument("--out", type=Path, default=REPO / "paper" / "isa" / "Figure_2.pdf")
     args = p.parse_args()
     rep = json.loads((REPO / "docs" / "paper" / "recall_precision.json").read_text(encoding="utf-8"))
     pw, tr = rep["per_world"], rep["transfer"]
 
-    plt.rcParams.update({"font.size": 9, "font.family": "serif"})
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.2, 3.0))
+    plt.rcParams.update({"font.size": 11, "font.family": "serif"})
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6.0, 8.0))
 
     worlds = list(pw["reflect"])
     xs = range(len(ARMS))
@@ -39,14 +39,19 @@ def main() -> None:
         ax1.plot(xs, [pw[a][w]["pi"] for a, _ in ARMS], color="0.6", lw=0.8, marker="o", ms=3)
     ax1.plot(xs, [rep["per_arm_mean"][a]["pi"] for a, _ in ARMS], color="black", lw=2, marker="o", ms=5,
              label="mean of 5 plants")
+    cm = json.loads((REPO / "docs" / "paper" / "corruption_model.json").read_text(encoding="utf-8"))["mean"]
+    ax1.plot([0, 1, 2], [cm["pi_clean_model"], cm["pi_0.2_model"], cm["pi_0.4_model"]], ls=":", color="#0072B2",
+             lw=1.5, marker="D", ms=7, mfc="white", label="thinning model, Prop. 2 (mean)")
     pstar = rep["per_arm_mean"]["reflect"]["pi_star"]
     ax1.axhline(pstar, color="#D55E00", ls="--", lw=1)
-    ax1.text(-0.05, pstar - 0.006, f"clean break-even $\\pi^*$ = {pstar:.2f}", ha="left", va="top",
-             color="#D55E00", fontsize=8)
+    ax1.text(-0.05, pstar - 0.004, f"clean break-even $\\pi^*$ = {pstar:.2f}", ha="left", va="top",
+             color="#D55E00", fontsize=9)
     ax1.set_xticks(list(xs), [lab for _, lab in ARMS])
     ax1.set_ylabel("Recall precision $\\pi$")
-    ax1.set_title("(a) Recall precision by feedback condition", fontsize=9)
-    ax1.legend(loc="lower left", frameon=False, fontsize=8)
+    ax1.set_ylim(0.63, 0.83)
+    ax1.grid(axis="y", color="0.92", lw=0.6)
+    ax1.set_title("(a) Recall precision by feedback condition", fontsize=11)
+    ax1.legend(loc="lower left", frameon=False, fontsize=9)
 
     for arm, (m, col) in MARKERS.items():
         cells = [c for c in tr["cells"] if c["arm"] == arm]
@@ -60,7 +65,7 @@ def main() -> None:
     ax2.set_ylim(lim)
     ax2.set_xlabel("Predicted paired $\\Delta$ (points)")
     ax2.set_ylabel("Observed paired $\\Delta$ (points)")
-    ax2.set_title(f"(b) Out-of-sample check (MAE {100 * tr['mae']:.1f} pts, r = {tr['pearson_r']:.2f})", fontsize=9)
+    ax2.set_title(f"(b) Out-of-sample check (MAE {100 * tr['mae']:.1f} pts, r = {tr['pearson_r']:.2f})", fontsize=11)
     ax2.legend(loc="upper left", frameon=False, fontsize=8)
 
     fig.tight_layout()

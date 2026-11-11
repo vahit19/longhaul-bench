@@ -7,6 +7,7 @@
       "gamma": 0.06770741983431594,
       "alpha": 0.05,
       "n_hoeffding": 1307,
+      "n_gauss": 528,
       "n_exact": 531,
       "flag_if_correct_at_most": 350
     },
@@ -15,6 +16,7 @@
       "gamma": 0.06770741983431594,
       "alpha": 0.1,
       "n_hoeffding": 1005,
+      "n_gauss": 321,
       "n_exact": 325,
       "flag_if_correct_at_most": 214
     },
@@ -23,6 +25,7 @@
       "gamma": 0.1015611297514739,
       "alpha": 0.05,
       "n_hoeffding": 581,
+      "n_gauss": 239,
       "n_exact": 240,
       "flag_if_correct_at_most": 154
     },
@@ -31,6 +34,7 @@
       "gamma": 0.1015611297514739,
       "alpha": 0.1,
       "n_hoeffding": 447,
+      "n_gauss": 145,
       "n_exact": 150,
       "flag_if_correct_at_most": 96
     },
@@ -39,6 +43,7 @@
       "gamma": 0.16926854958578985,
       "alpha": 0.05,
       "n_hoeffding": 210,
+      "n_gauss": 88,
       "n_exact": 91,
       "flag_if_correct_at_most": 55
     },
@@ -47,6 +52,7 @@
       "gamma": 0.16926854958578985,
       "alpha": 0.1,
       "n_hoeffding": 161,
+      "n_gauss": 53,
       "n_exact": 58,
       "flag_if_correct_at_most": 35
     }
