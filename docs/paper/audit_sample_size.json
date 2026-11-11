@@ -1,0 +1,104 @@
+{
+  "pi_star": 0.6931984147104864,
+  "accuracy_per_unit_precision": 0.2953886006724401,
+  "table": [
+    {
+      "accuracy_loss_points": 2.0,
+      "gamma": 0.06770741983431594,
+      "alpha": 0.05,
+      "n_hoeffding": 1307,
+      "n_exact": 531,
+      "flag_if_correct_at_most": 350
+    },
+    {
+      "accuracy_loss_points": 2.0,
+      "gamma": 0.06770741983431594,
+      "alpha": 0.1,
+      "n_hoeffding": 1005,
+      "n_exact": 325,
+      "flag_if_correct_at_most": 214
+    },
+    {
+      "accuracy_loss_points": 3.0,
+      "gamma": 0.1015611297514739,
+      "alpha": 0.05,
+      "n_hoeffding": 581,
+      "n_exact": 240,
+      "flag_if_correct_at_most": 154
+    },
+    {
+      "accuracy_loss_points": 3.0,
+      "gamma": 0.1015611297514739,
+      "alpha": 0.1,
+      "n_hoeffding": 447,
+      "n_exact": 150,
+      "flag_if_correct_at_most": 96
+    },
+    {
+      "accuracy_loss_points": 5.0,
+      "gamma": 0.16926854958578985,
+      "alpha": 0.05,
+      "n_hoeffding": 210,
+      "n_exact": 91,
+      "flag_if_correct_at_most": 55
+    },
+    {
+      "accuracy_loss_points": 5.0,
+      "gamma": 0.16926854958578985,
+      "alpha": 0.1,
+      "n_hoeffding": 161,
+      "n_exact": 58,
+      "flag_if_correct_at_most": 35
+    }
+  ],
+  "empirical_flag_rate": {
+    "2pt": {
+      "reflect": {
+        "m4_night1": 0.0,
+        "repl_w43": 0.0,
+        "repl_w44": 0.0,
+        "repl_w45": 0.0,
+        "repl_w46": 0.0
+      },
+      "noise0.4": {
+        "m4_night1": 0.297,
+        "repl_w43": 0.699,
+        "repl_w44": 0.682,
+        "repl_w45": 0.577,
+        "repl_w46": 0.7885
+      }
+    },
+    "3pt": {
+      "reflect": {
+        "m4_night1": 0.0,
+        "repl_w43": 0.0,
+        "repl_w44": 0.0,
+        "repl_w45": 0.0,
+        "repl_w46": 0.0
+      },
+      "noise0.4": {
+        "m4_night1": 0.174,
+        "repl_w43": 0.4175,
+        "repl_w44": 0.4595,
+        "repl_w45": 0.3355,
+        "repl_w46": 0.496
+      }
+    },
+    "5pt": {
+      "reflect": {
+        "m4_night1": 0.0,
+        "repl_w43": 0.0,
+        "repl_w44": 0.0,
+        "repl_w45": 0.0,
+        "repl_w46": 0.0005
+      },
+      "noise0.4": {
+        "m4_night1": 0.1175,
+        "repl_w43": 0.1985,
+        "repl_w44": 0.212,
+        "repl_w45": 0.164,
+        "repl_w46": 0.2405
+      }
+    }
+  }
+}
