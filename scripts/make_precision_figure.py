@@ -30,7 +30,9 @@ def main() -> None:
     rep = json.loads((REPO / "docs" / "paper" / "recall_precision.json").read_text(encoding="utf-8"))
     pw, tr = rep["per_world"], rep["transfer"]
 
-    plt.rcParams.update({"font.size": 11, "font.family": "serif"})
+    # embed fonts as TrueType (Type 42) rather than Type 3 bitmaps; Times to match journal body text
+    plt.rcParams.update({"font.size": 11, "font.family": "serif", "font.serif": ["Times New Roman", "DejaVu Serif"],
+                         "mathtext.fontset": "stix", "pdf.fonttype": 42, "ps.fonttype": 42})
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6.0, 8.0))
 
     worlds = list(pw["reflect"])

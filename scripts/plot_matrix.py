@@ -28,8 +28,12 @@ def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--matrix", type=Path, required=True)
     p.add_argument("--window", type=int, default=100)
+    p.add_argument("--out", type=Path, default=None, help="optional output PDF path (PNG written alongside)")
     args = p.parse_args()
 
+    # embed fonts as TrueType (Type 42) rather than Type 3 bitmaps; Times to match journal body text
+    plt.rcParams.update({"pdf.fonttype": 42, "ps.fonttype": 42, "font.family": "serif",
+                         "font.serif": ["Times New Roman", "DejaVu Serif"], "mathtext.fontset": "stix"})
     fig, ax = plt.subplots(figsize=(6.5, 3.6))
     for side in ("top", "right"):
         ax.spines[side].set_visible(False)
@@ -63,6 +67,11 @@ def main() -> None:
     ax.set_xlim(right=ax.get_xlim()[1] * 1.28)  # room for direct labels
     ax.yaxis.set_major_formatter(lambda v, _: f"{v:.0%}")
 
+    if args.out:
+        for ext in ("pdf", "png"):
+            fig.savefig(args.out.with_suffix(f".{ext}"), dpi=300, bbox_inches="tight")
+        print(f"saved -> {args.out.with_suffix('')}.pdf/.png")
+        return
     out = args.matrix / "figures"
     out.mkdir(exist_ok=True)
     for ext in ("pdf", "png"):
