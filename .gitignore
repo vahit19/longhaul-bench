@@ -20,3 +20,5 @@ docs/RELATED_WORK.md
 
 # replay-only plants: regenerate with environments/generator.py --seed 100..129 (see README)
 runs/replay_worlds/
+# hosted Gemma runs abandoned (provider returned degenerate text); kept locally, not released
+runs/api_gemma4b_*/

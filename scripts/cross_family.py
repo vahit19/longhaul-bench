@@ -1,9 +1,8 @@
 """Replication of the main effects and of the recall-precision theory across model families.
 
-Families (all 3-4B parameters, i.e. models that fit embedded hardware):
+Families (3B parameters, 4-bit quantized):
   qwen     Qwen2.5-3B-Instruct Q4_K_M, canonical prompt (main study; runs m4_night1, repl_w43..w46)
   llama    Llama-3.2-3B-Instruct Q4_K_M, strict-vocabulary prompt (runs xfam_llama_w42..w46)
-  gemma    Gemma-3-4B-it Q4_K_M, canonical prompt (runs gemma4bq4_w42..w46)
   qwen_strict  Qwen2.5-3B Q4_K_M with the strict-vocabulary prompt (frozen and reflect; runs xfam_qwen_w42..w46)
 
 Per family and plant it reads the released results and traces (no agent re-run) and reports
@@ -39,7 +38,6 @@ QWEN_ARM = {"frozen": {}, "reflect": {}, "noise0.4": {"w42": "noise0.4-plausible
 FAMILIES = {
     "qwen": {"label": "Qwen2.5-3B", "dir": lambda w: QWEN_DIR[w], "arm": lambda a, w: QWEN_ARM[a].get(w, a)},
     "llama": {"label": "Llama-3.2-3B", "dir": lambda w: f"xfam_llama_{w}", "arm": lambda a, w: a},
-    "gemma": {"label": "Gemma-3-4B", "dir": lambda w: f"gemma4bq4_{w}", "arm": lambda a, w: a},
     "qwen_strict": {"label": "Qwen2.5-3B (strict prompt)", "dir": lambda w: f"xfam_qwen_{w}", "arm": lambda a, w: a},
 }
 ARMS = ("frozen", "reflect", "noise0.4", "defended0.4")

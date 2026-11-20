@@ -141,6 +141,8 @@ On 30 further generated plants (`scripts/replay30.py`, seeds 100–129) support-
 
 **Reference points without a language model** (`scripts/nonllm_baselines.py`, `scripts/nonllm_gap.py`): a manual vote rule reaches 68.4% (complete manuals) but 0% on omitted faults; the case base alone reaches 52.5% clean and 34.1% at 40% miscoding.
 
+A third-family check with Gemma-3-4B on a hosted inference provider was abandoned: during the runs the provider began returning degenerate text (most answers became unparseable, whereas the earliest runs reached about 60% accuracy with no format failures), so those runs are not used anywhere and are not released. `scripts/chain_api.py` and the robust response handling in `agents/slm_agent.py` remain for future hosted runs.
+
 Runs added in this round were served on a GPU host with llama.cpp b9918 (commit 0512ef1) and GGUF files whose SHA-256 hashes match the CPU runs (`runs/gpu_provenance/`). Generated worlds are reproducible from their seeds:
 
 ```bash
