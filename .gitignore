@@ -17,3 +17,6 @@ docs/PAPER_PLAN.md
 docs/paper/DRAFT.md
 docs/COUNCIL_DECISION.md
 docs/RELATED_WORK.md
+
+# replay-only plants: regenerate with environments/generator.py --seed 100..129 (see README)
+runs/replay_worlds/

@@ -1,0 +1,62 @@
+{
+  "operator": "reflect",
+  "policy": "importance",
+  "budget": 100,
+  "feedback_noise": 0.0,
+  "episodes": 945,
+  "exact_accuracy": 0.6582010582010582,
+  "memory_hit_rate": 0.9873015873015873,
+  "final_memory": {
+    "entries": 100,
+    "bytes": 14998,
+    "evictions": 477
+  },
+  "gate_stats": {
+    "write_rejections": 0,
+    "read_filtered": 0
+  },
+  "peak_system_rss_mb": 30168,
+  "latency_p50_s": 4.98,
+  "probe_curve": [
+    {
+      "after_episode": 100,
+      "probe_exact": 0.7
+    },
+    {
+      "after_episode": 200,
+      "probe_exact": 0.66
+    },
+    {
+      "after_episode": 300,
+      "probe_exact": 0.68
+    },
+    {
+      "after_episode": 400,
+      "probe_exact": 0.66
+    },
+    {
+      "after_episode": 500,
+      "probe_exact": 0.68
+    },
+    {
+      "after_episode": 600,
+      "probe_exact": 0.72
+    },
+    {
+      "after_episode": 700,
+      "probe_exact": 0.7
+    },
+    {
+      "after_episode": 800,
+      "probe_exact": 0.7
+    },
+    {
+      "after_episode": 900,
+      "probe_exact": 0.72
+    },
+    {
+      "after_episode": 945,
+      "probe_exact": 0.68
+    }
+  ]
+}

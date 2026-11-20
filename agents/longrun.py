@@ -24,6 +24,8 @@ import sys
 import time
 from pathlib import Path
 
+import os as _os
+
 import psutil
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -34,6 +36,10 @@ from agents.slm_agent import run_episode  # noqa: E402
 def system_rss_mb() -> float:
     """Agent process + every llama-server process, MB."""
     total = psutil.Process().memory_info().rss
+    if _os.environ.get("LONGHAUL_REMOTE_SERVER"):
+        # model served on another host: only the agent process is local, and scanning every
+        # process each episode dominates wall time when many arms run in parallel
+        return round(total / 1e6)
     for p in psutil.process_iter(["name", "memory_info"]):
         try:
             if p.info["name"] and "llama-server" in p.info["name"]:

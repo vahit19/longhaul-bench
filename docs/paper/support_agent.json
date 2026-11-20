@@ -1,0 +1,128 @@
+{
+  "per_plant": {
+    "w42": {
+      "frozen": 0.5819095477386935,
+      "reflect": 0.5949748743718593,
+      "noise": 0.535678391959799,
+      "support": 0.6623115577889447,
+      "noise_support": 0.6100502512562814,
+      "pred_support": 0.032325067190273414,
+      "pred_noise_support": 0.00859431543240863,
+      "pi_replay_support": 0.8642350557244174,
+      "pi_replay_noise_support": 0.7943262411347518,
+      "pi_agent_support": 0.8642350557244174,
+      "pi_agent_noise_support": 0.7943262411347518,
+      "obs_support": 0.08040201005025116,
+      "obs_noise_support": 0.028140703517587906
+    },
+    "w43": {
+      "frozen": 0.5839195979899497,
+      "reflect": 0.6251256281407035,
+      "noise": 0.5396984924623116,
+      "support": 0.6673366834170854,
+      "noise_support": 0.5969849246231156,
+      "pred_support": 0.05290650784788132,
+      "pred_noise_support": 0.0076307463242136055,
+      "pi_replay_support": 0.8699186991869918,
+      "pi_replay_noise_support": 0.6890243902439024,
+      "pi_agent_support": 0.8699186991869918,
+      "pi_agent_noise_support": 0.6890243902439024,
+      "obs_support": 0.08341708542713566,
+      "obs_noise_support": 0.013065326633165841
+    },
+    "w44": {
+      "frozen": 0.5678391959798995,
+      "reflect": 0.6180904522613065,
+      "noise": 0.5557788944723618,
+      "support": 0.6351758793969849,
+      "noise_support": 0.5979899497487438,
+      "pred_support": 0.06004385420414425,
+      "pred_noise_support": 0.03297020112363549,
+      "pi_replay_support": 0.8255102040816327,
+      "pi_replay_noise_support": 0.7295918367346939,
+      "pi_agent_support": 0.8255102040816327,
+      "pi_agent_noise_support": 0.7295918367346939,
+      "obs_support": 0.06733668341708543,
+      "obs_noise_support": 0.03015075376884424
+    },
+    "w45": {
+      "frozen": 0.5915343915343916,
+      "reflect": 0.6201058201058202,
+      "noise": 0.5650793650793651,
+      "support": 0.6582010582010582,
+      "noise_support": 0.5894179894179894,
+      "pred_support": 0.04644970293971832,
+      "pred_noise_support": 0.02731681282628547,
+      "pi_replay_support": 0.8585209003215434,
+      "pi_replay_noise_support": 0.7931404072883173,
+      "pi_agent_support": 0.8585209003215434,
+      "pi_agent_noise_support": 0.7931404072883173,
+      "obs_support": 0.06666666666666665,
+      "obs_noise_support": -0.002116402116402183
+    },
+    "w46": {
+      "frozen": 0.5841269841269842,
+      "reflect": 0.6074074074074074,
+      "noise": 0.5703703703703704,
+      "support": 0.6825396825396826,
+      "noise_support": 0.6338624338624339,
+      "pred_support": 0.031813903193532486,
+      "pred_noise_support": 0.002736860526641893,
+      "pi_replay_support": 0.8372591006423983,
+      "pi_replay_noise_support": 0.7387580299785867,
+      "pi_agent_support": 0.8372591006423983,
+      "pi_agent_noise_support": 0.7387580299785867,
+      "obs_support": 0.0984126984126984,
+      "obs_noise_support": 0.049735449735449744
+    }
+  },
+  "mean": {
+    "frozen": 0.5818659434739837,
+    "reflect": 0.6131408364574193,
+    "noise": 0.5533211028688416,
+    "support": 0.6611129722687512,
+    "noise_support": 0.6056611097817128,
+    "pred_support": 0.044707807075109955,
+    "pred_noise_support": 0.015849787246637017,
+    "pi_replay_support": 0.8510887919913968,
+    "pi_replay_noise_support": 0.7489681810760505,
+    "pi_agent_support": 0.8510887919913968,
+    "pi_agent_noise_support": 0.7489681810760505,
+    "obs_support": 0.07924702879476746,
+    "obs_noise_support": 0.02379516630772911
+  },
+  "tests": {
+    "support_vs_reflect": {
+      "mean_diff": 0.04797213581133179,
+      "min": 0.0170854271356784,
+      "max": 0.07513227513227516,
+      "plants_positive": 5,
+      "p_mwu": 0.007936507936507936,
+      "cliffs_delta": 1.0
+    },
+    "noise_support_vs_noise": {
+      "mean_diff": 0.05234000691287122,
+      "min": 0.024338624338624326,
+      "max": 0.07437185929648238,
+      "plants_positive": 5,
+      "p_mwu": 0.007936507936507936,
+      "cliffs_delta": 1.0
+    },
+    "support_vs_frozen": {
+      "mean_diff": 0.07924702879476746,
+      "min": 0.06666666666666665,
+      "max": 0.0984126984126984,
+      "plants_positive": 5,
+      "p_mwu": 0.007936507936507936,
+      "cliffs_delta": 1.0
+    },
+    "noise_support_vs_frozen": {
+      "mean_diff": 0.02379516630772911,
+      "min": -0.002116402116402183,
+      "max": 0.049735449735449744,
+      "plants_positive": 4,
+      "p_mwu": 0.015873015873015872,
+      "cliffs_delta": 0.92
+    }
+  }
+}

@@ -17,7 +17,9 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import http.client
 import json
+import os
 import re
 import statistics
 import time
@@ -77,6 +79,7 @@ class Tools:
         ]
 
     def manual_search(self, query: str = "", **_) -> list:
+        query = query if isinstance(query, str) else " ".join(map(str, query)) if isinstance(query, list) else str(query)
         if self.retriever is not None:
             return self.retriever.search(self.machine_id, query or "fault diagnosis", k=5)
         words = set(re.findall(r"[a-z_]{3,}", query.lower()))
@@ -93,26 +96,41 @@ class Tools:
 
 
 def chat(endpoint: str, messages: list, max_tokens: int = 200, retries: int = 3) -> tuple:
-    payload = json.dumps({
-        "messages": messages,
-        "temperature": 0.0,
-        "max_tokens": max_tokens,
-    }).encode()
-    last_err = None
-    for attempt in range(retries):
+    # Optional hosted endpoint (capability-scaling experiment): LONGHAUL_API_MODEL names
+    # the model, LONGHAUL_API_PROVIDER pins one provider so that all arms share the same
+    # serving stack, and the key is read from OPENROUTER_API_KEY. Local runs set none of these.
+    body_dict = {"messages": messages, "temperature": 0.0, "max_tokens": max_tokens}
+    headers = {"Content-Type": "application/json", "User-Agent": "longhaul-bench/1.0"}
+    if os.environ.get("LONGHAUL_API_MODEL"):
+        body_dict["model"] = os.environ["LONGHAUL_API_MODEL"]
+        body_dict["seed"] = 0
+        if os.environ.get("LONGHAUL_API_PROVIDER"):
+            body_dict["provider"] = {"order": [os.environ["LONGHAUL_API_PROVIDER"]],
+                                     "allow_fallbacks": False}
+        headers["Authorization"] = "Bearer " + os.environ["OPENROUTER_API_KEY"]
+    payload = json.dumps(body_dict).encode()
+    last_err, empty_seen = None, 0
+    hosted = bool(os.environ.get("LONGHAUL_API_MODEL"))
+    for attempt in range(retries + 17 * hosted):  # hosted runs ride out network outages
         try:
             req = urllib.request.Request(
                 endpoint + "/v1/chat/completions",
                 data=payload,
-                headers={"Content-Type": "application/json"},
+                headers=headers,
             )
-            with urllib.request.urlopen(req, timeout=300) as r:
+            with urllib.request.urlopen(req, timeout=60 if hosted else 300) as r:
                 body = json.loads(r.read())
             usage = body.get("usage", {})
-            return body["choices"][0]["message"]["content"], usage
-        except (TimeoutError, OSError) as e:  # transient server hiccups on long runs
+            content = body["choices"][0]["message"]["content"]
+            if content is None:  # hosted providers occasionally return an empty message
+                empty_seen += 1
+                if empty_seen > 1:  # deterministic at temperature 0: score as malformed output
+                    return "", usage
+                continue
+            return content, usage
+        except (TimeoutError, OSError, ValueError, http.client.HTTPException) as e:  # transient hiccups, cut-off responses
             last_err = e
-            time.sleep(5 * (attempt + 1))
+            time.sleep(min(5 * (attempt + 1), 30))
     raise last_err
 
 
@@ -151,6 +169,8 @@ def run_episode(endpoint: str, world: dict, ep: dict, max_steps: int = 6,
         tokens["prompt"] += usage.get("prompt_tokens", 0)
         tokens["completion"] += usage.get("completion_tokens", 0)
         obj = parse_json(text)
+        if obj is not None and "diagnosis" in obj and not isinstance(obj["diagnosis"], (dict, type(None))):
+            obj = None  # e.g. {"diagnosis": "bearing wear"}: not the required object, treated as malformed
 
         if obj is None:  # anomaly policy: one structured retry, then fail
             anomalies += 1
@@ -168,9 +188,12 @@ def run_episode(endpoint: str, world: dict, ep: dict, max_steps: int = 6,
                 r["trace"] = messages + [{"role": "assistant", "content": text}]
             return r
 
-        if "tool" in obj and hasattr(tools, str(obj["tool"])):
+        if "tool" in obj and str(obj["tool"]) in ("alarm_lookup", "manual_search", "maintenance_history"):
             tool_calls += 1
-            result = getattr(tools, obj["tool"])(**(obj.get("args") or {}))
+            args = obj.get("args") or {}
+            if not isinstance(args, dict):  # e.g. {"args": "bearing"}: a bare string is the search query
+                args = {"query": str(args)} if obj["tool"] == "manual_search" else {}
+            result = getattr(tools, obj["tool"])(**args)
             messages.append({"role": "assistant", "content": text})
             messages.append({"role": "user", "content": f"Tool result: {json.dumps(result)}"})
         else:
